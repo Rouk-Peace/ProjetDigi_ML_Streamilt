@@ -8,6 +8,12 @@ from sklearn.linear_model import LinearRegression, Lasso
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
+from regression.preprocessing_reg import preprocessing_module
+
+preprocessing_module()
+
+
+"""
 # Configuration de la page principale
 st.set_page_config(page_title="PLAYGROUND ML", layout="wide")
 
@@ -148,3 +154,4 @@ if uploaded_file is not None:
 else:
     st.write("Veuillez télécharger un fichier CSV pour commencer.")
 
+"""

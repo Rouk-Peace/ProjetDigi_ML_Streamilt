@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
+import statsmodels.api as sm
 
 # Titre de la sous-page
 st.title("Analyse de Données : Exploration et analyses visuelles des données pour la Régression")
@@ -13,13 +14,6 @@ st.markdown("""
 Bienvenue sur la page d'analyse des données. Cette section vous permet d'explorer, visualiser et comprendre 
 les caractéristiques du jeu de données avant la modélisation. L'objectif est de mettre en évidence les relations entre les variables, 
 d'identifier les tendances et les anomalies, et de préparer les données pour les étapes de régression.
-
-#### **Fonctionnalités Disponibles :**
-- **Résumé Statistique** : Explorez les statistiques descriptives (moyenne, écart-type, etc.) pour chaque variable.
-- **Visualisations Interactives** : Créez des graphiques pour visualiser les distributions des variables, les corrélations, et les relations importantes entre les caractéristiques et la variable cible.
-- **Sélection de Variables** : Filtrez et choisissez les variables pertinentes pour améliorer les performances des modèles de régression.
-- **Gestion des Données Manquantes** : Identifiez et gérez les données manquantes ou aberrantes pour garantir une analyse robuste.
-- **Transformation des Données** : Testez différentes transformations (normalisation, standardisation) pour améliorer les modèles.
 """)
 
 # Fonction pour analyse descriptive

@@ -5,9 +5,10 @@ from sklearn.impute import SimpleImputer
 
 
 # Configuration de la page principale
+"""
 def config_page():
     st.set_page_config(page_title="Préparation des Données", layout="wide")
-
+"""
 
 # Définition des couleurs
 def define_colors():
@@ -26,8 +27,8 @@ def define_colors():
 
 
 # Fonction principale pour la gestion du prétraitement
-def preprocessing_module():
-    config_page()
+def run_preprocessing():
+    #config_page()
     colors = define_colors()
     uploaded_file = st.sidebar.file_uploader("Téléchargez votre fichier CSV", type=["csv"])
 
@@ -40,6 +41,7 @@ def preprocessing_module():
             if selected_columns:
                 clean_data(df, selected_columns, colors)
                 download_processed_data(df)
+                st.session_state['df'] = df  # Stocke les données dans la session
             else:
                 st.write("Veuillez sélectionner des colonnes pour le traitement.")
 
@@ -138,23 +140,6 @@ def manage_missing_data(df, selected_columns):
         st.write("Colonnes contenant des valeurs manquantes supprimées.")
 
 
-"""# Fonction pour encoder les données catégorielles
-def encode_categorical_data(df, selected_columns):
-    st.write("**Encodage des variables catégorielles :**")
-    if st.checkbox("Afficher les colonnes catégorielles"):
-        categorical_columns = df[selected_columns].select_dtypes(include=['object', 'category']).columns
-        st.write("Colonnes catégorielles détectées :", categorical_columns)
-
-    encoding_option = st.selectbox(
-        "Choisissez la méthode d'encodage des variables catégorielles",
-        ["Aucune", "Encodage One-Hot"]
-    )
-
-    if encoding_option == "Encodage One-Hot" and st.button("Encoder les variables catégorielles"):
-        df = pd.get_dummies(df, columns=categorical_columns)
-        st.write("Variables catégorielles encodées avec One-Hot.")
-"""
-
 # Fonction pour télécharger les données traitées
 def download_processed_data(df):
     st.write("**Télécharger le fichier traité :**")
@@ -168,5 +153,5 @@ def download_processed_data(df):
 
 
 # Appel de la fonction principale pour le module de préprocessing
-if __name__ == "__main__":
-    preprocessing_module()
+"""if __name__ == "__main__":
+    preprocessing_module()"""
