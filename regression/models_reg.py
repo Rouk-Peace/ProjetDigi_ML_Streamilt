@@ -1,13 +1,9 @@
 import streamlit as st
 from sklearn.linear_model import LinearRegression, Lasso
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.model_selection import train_test_split
-import numpy as np
 import pandas as pd
 import joblib
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 # Fonction principale pour la sous-page des modèles
 def run_model_selection(X, y):
@@ -57,55 +53,18 @@ def run_model_selection(X, y):
     if st.button("Entraîner le Modèle"):
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
         model.fit(X_train, y_train)
-        y_pred = model.predict(X_test)
-
-        # 4. Évaluation du modèle
-        st.subheader("Évaluation du Modèle")
-        rmse = np.sqrt(mean_squared_error(y_test, y_pred))
-        mae = mean_absolute_error(y_test, y_pred)
-        r2 = r2_score(y_test, y_pred)
-
-        st.write(f"**RMSE :** {rmse:.4f}")
-        st.write(f"**MAE :** {mae:.4f}")
-        st.write(f"**R² :** {r2:.4f}")
-
-        # Graphique des valeurs réelles vs prédites
-        st.subheader("Graphique des Valeurs Réelles vs Prédites")
-        plot_real_vs_predicted(y_test, y_pred)
-
-        # Affichage des coefficients si modèle linéaire
-        if model_choice in ["Régression Linéaire", "Lasso"]:
-            plot_coefficients(model, X.columns)
+        st.session_state['model'] = model
+        st.session_state['X_test'] = X_test
+        st.session_state['y_test'] = y_test
+        st.session_state['y_pred'] = model.predict(X_test)
+        st.success("Modèle entraîné avec succès !")
 
         # Sauvegarde du modèle
         if st.checkbox("Sauvegarder le Modèle Entraîné"):
             save_model(model, model_choice, params)
-
-# Fonction pour afficher le graphique des valeurs réelles vs prédites
-def plot_real_vs_predicted(y_test, y_pred):
-    fig, ax = plt.subplots(figsize=(8, 6))
-    ax.scatter(y_test, y_pred, color='blue', alpha=0.5)
-    ax.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--', lw=2)
-    ax.set_xlabel('Valeurs Réelles')
-    ax.set_ylabel('Valeurs Prédites')
-    ax.set_title('Valeurs Réelles vs Prédites')
-    st.pyplot(fig)
-
-# Fonction pour afficher les coefficients du modèle linéaire
-def plot_coefficients(model, feature_names):
-    st.subheader("Importance des Variables (Coefficients)")
-    coef = pd.Series(model.coef_, index=feature_names).sort_values()
-    fig, ax = plt.subplots(figsize=(10, 6))
-    sns.barplot(x=coef.values, y=coef.index, ax=ax, palette="coolwarm")
-    plt.title("Coefficients des Variables")
-    st.pyplot(fig)
 
 # Fonction pour sauvegarder le modèle
 def save_model(model, model_name, params):
     filename = f"{model_name}_model.pkl"
     joblib.dump(model, filename)
     st.success(f"Modèle {model_name} sauvegardé avec succès sous le nom {filename}.")
-
-# Exemple d'appel de la fonction principale
-# Appelée avec les données X et y depuis votre script app.py
-# run_model_selection(X, y)
