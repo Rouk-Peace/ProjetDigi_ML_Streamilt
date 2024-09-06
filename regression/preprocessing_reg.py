@@ -2,27 +2,33 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import OneHotEncoder, LabelEncoder
+
 
 # Configuration de la page principale
-st.set_page_config(page_title="Préparation des Données", layout="wide")
+"""
+def config_page():
+    st.set_page_config(page_title="Préparation des Données", layout="wide")
+"""
 
 # Définition des couleurs
-colors = {
-    'background': '#F5F5F5',
-    'block_bg': '#FFFFFF',
-    'text': '#1E3D59',
-    'button_bg': '#1E3D59',
-    'button_text': '#FFFFFF',
-    'button_hover': '#172A40',
-    'expander_bg': '#E8F0FE',
-    'title_text': '#1E3D59',
-    'subtitle_text': '#A78F41',
-    'border_color': '#E0E0E0',
-}
+def define_colors():
+    return {
+        'background': '#F5F5F5',
+        'block_bg': '#FFFFFF',
+        'text': '#1E3D59',
+        'button_bg': '#1E3D59',
+        'button_text': '#FFFFFF',
+        'button_hover': '#172A40',
+        'expander_bg': '#E8F0FE',
+        'title_text': '#1E3D59',
+        'subtitle_text': '#A78F41',
+        'border_color': '#E0E0E0',
+    }
+
 
 # Fonction principale pour la gestion du prétraitement
 def run_preprocessing():
+    #config_page()
     colors = define_colors()
     uploaded_file = st.sidebar.file_uploader("Téléchargez votre fichier CSV", type=["csv"])
 
@@ -34,15 +40,11 @@ def run_preprocessing():
 
             if selected_columns:
                 clean_data(df, selected_columns, colors)
-
-                # Ajout des fonctions pour la Target
-                modify_target_values(df)
-                encode_target(df)
-
                 download_processed_data(df)
                 st.session_state['df'] = df  # Stocke les données dans la session
             else:
                 st.write("Veuillez sélectionner des colonnes pour le traitement.")
+
 
 # Fonction pour charger les données
 def load_data(uploaded_file):
@@ -53,6 +55,7 @@ def load_data(uploaded_file):
         st.write(f"Erreur lors du chargement du fichier : {e}")
         return None
 
+
 # Fonction pour afficher l'aperçu des données et des informations
 def display_data_overview(df):
     st.title("Préparation des Données")
@@ -60,11 +63,12 @@ def display_data_overview(df):
     st.write(df.head())
 
     st.write("**Informations sur le dataset :**")
-    buffer = st.empty()
-    buffer.text(df.info())
+    buffer = st.empty()  # Pour afficher l'info du dataset proprement
+    buffer.text(df.info())  # Peut nécessiter un hack pour mieux afficher sur Streamlit
 
     st.write(f"Nombre de lignes : {df.shape[0]}")
     st.write(f"Nombre de colonnes : {df.shape[1]}")
+
 
 # Fonction pour sélectionner les colonnes pour le traitement
 def select_columns(df):
@@ -73,6 +77,7 @@ def select_columns(df):
         df.columns.tolist(),
         default=df.columns.tolist()
     )
+
 
 # Fonction pour nettoyer les données : gestion des valeurs manquantes et encodage
 def clean_data(df, selected_columns, colors):
@@ -95,6 +100,7 @@ def clean_data(df, selected_columns, colors):
             st.write(df.dtypes)
 
         st.markdown('</div>', unsafe_allow_html=True)
+
 
 # Fonction pour imputer les valeurs manquantes
 def impute_missing_values(df, selected_columns):
@@ -121,6 +127,7 @@ def impute_missing_values(df, selected_columns):
             df[selected_columns] = imputer.fit_transform(df[selected_columns])
             st.write(f"Valeurs manquantes imputées avec la valeur {value}.")
 
+
 # Fonction pour gérer les valeurs manquantes
 def manage_missing_data(df, selected_columns):
     st.write("**Gestion des valeurs manquantes :**")
@@ -132,27 +139,6 @@ def manage_missing_data(df, selected_columns):
         df.dropna(axis=1, subset=selected_columns, inplace=True)
         st.write("Colonnes contenant des valeurs manquantes supprimées.")
 
-# Fonction pour modifier les valeurs d'une colonne 'target'
-def modify_target_values(df):
-    st.write("**Modification des valeurs dans la Target :**")
-    if 'target' in df.columns:
-        # Remplacement spécifique
-        df['target'] = df['target'].replace('Vin éuilibré', 'Vin équilibré')
-        st.write("Valeurs corrigées dans la colonne 'target'.")
-
-# Fonction pour encoder la colonne 'target'
-def encode_target(df):
-    st.write("**Encodage de la Target :**")
-    if 'target' in df.columns:
-        encoding_method = st.selectbox("Choisissez la méthode d'encodage de la Target", ["Aucune", "Label Encoding", "One-Hot Encoding"])
-
-        if encoding_method == "Label Encoding":
-            le = LabelEncoder()
-            df['target_encoded'] = le.fit_transform(df['target'])
-            st.write("Target encodée avec Label Encoding.")
-        elif encoding_method == "One-Hot Encoding":
-            df = pd.get_dummies(df, columns=['target'])
-            st.write("Target encodée avec One-Hot Encoding.")
 
 # Fonction pour télécharger les données traitées
 def download_processed_data(df):
@@ -165,6 +151,7 @@ def download_processed_data(df):
         mime='text/csv'
     )
 
+
 # Appel de la fonction principale pour le module de préprocessing
-if __name__ == "__main__":
-    run_preprocessing()
+"""if __name__ == "__main__":
+    preprocessing_module()"""
