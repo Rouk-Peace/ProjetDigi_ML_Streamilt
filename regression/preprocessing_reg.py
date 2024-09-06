@@ -32,13 +32,13 @@ def run_preprocessing():
     df = load_dataset_option()
 
     if df is not None:
-        with st.expander("Informations sur le Dataset"):
-            display_data_overview(df)
-            if st.button("Afficher le nombre de lignes et de colonnes"):
-                st.write(pd.DataFrame({"Nombre de lignes": [df.shape[0]], "Nombre de colonnes": [df.shape[1]]}))
+        st.write("Informations sur le Dataset")
+        display_data_overview(df)
+        st.write(" Le nombre de lignes et de colonnes")
+        st.write(pd.DataFrame({"Nombre de lignes": [df.shape[0]], "Nombre de colonnes": [df.shape[1]]}))
 
-            if st.button("Afficher les types de données"):
-                st.write(df.dtypes)
+        st.write("Les types de données")
+        st.write(pd.DataFrame(df.dtypes))
 
         selected_columns = select_columns(df)
 
@@ -55,7 +55,7 @@ def load_dataset_option():
     option = st.radio("Choisissez un dataset:", ("Fichier Diabète", "Charger votre propre fichier CSV"))
     if option == "Fichier Diabète":
         try:
-            df = pd.read_csv(r"C:\Users\orouk\PycharmProjects\ProjetDigi_ML_Streamilt\data\diabete.csv")
+            df = pd.read_csv(r"C:\Users\orouk\PycharmProjects\ProjetDigi_ML_Streamilt\regression\data\diabete.csv")
   # Assurez-vous que le fichier "diabetes.csv" est dans le bon répertoire
             st.write("Dataset Diabète chargé avec succès.")
             st.session_state['df'] = df # Initialiser st.session_state['df']
@@ -102,20 +102,21 @@ def clean_data(df, selected_columns, colors):
                     unsafe_allow_html=True)
 
         # Affichage des valeurs manquantes
-        if st.checkbox("Afficher les valeurs manquantes"):
-            st.write(df[selected_columns].isnull().sum())
+        st.write("Valeurs manquantes")
+        st.write(df[selected_columns].isnull().sum())
         #else:
             #st.write("**Imputation des valeurs manquantes :**")
             #st.write(df[selected_columns].isnull().sum())
             #show_data_cleaning_options(df, selected_columns)
 
-            if df[selected_columns].isnull().sum().sum() == 0:
-                if st.checkbox("Vous n'avez pas de valeurs manquantes. Souhaitez-vous afficher les options de nettoyage ?"):
-                    show_data_cleaning_options(df, selected_columns)
-            else:
-                st.write("**Imputation des valeurs manquantes :**")
-                st.write(df[selected_columns].isnull().sum())
+        if df[selected_columns].isnull().sum().sum() == 0:
+            st.write("Vous n'avez pas de valeurs manquantes.")
+            if st.checkbox(" Souhaitez-vous afficher les options de nettoyage ?"):
                 show_data_cleaning_options(df, selected_columns)
+        else:
+            st.write("**Imputation des valeurs manquantes :**")
+            st.write(df[selected_columns].isnull().sum())
+            show_data_cleaning_options(df, selected_columns)
 
             st.markdown('</div>', unsafe_allow_html=True)
 

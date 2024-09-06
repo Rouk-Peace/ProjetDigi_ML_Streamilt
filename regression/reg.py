@@ -8,7 +8,7 @@ import evaluation_reg as eval
 #st.set_page_config(page_title="Régression : Prétraitement, Analyse, Modélisation et Évaluation", layout="wide")
 
 
-def main():
+def main_reg():
     # Crée les onglets pour chaque étape
     st.title("Régression : De la Préparation à l'Évaluation des Modèles")
     tabs = ["Prétraitement", "Analyse", "Modélisation", "Évaluation"]
@@ -59,4 +59,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main_reg()
