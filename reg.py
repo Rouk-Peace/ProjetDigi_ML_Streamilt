@@ -8,19 +8,22 @@ import evaluation_reg as eval
 #st.set_page_config(page_title="Régression : Prétraitement, Analyse, Modélisation et Évaluation", layout="wide")
 
 
-def main():
+def main_reg():
     # Crée les onglets pour chaque étape
-    st.title("Page de Régression : De la Préparation à l'Évaluation des Modèles")
+    st.title("Régression : De la Préparation à l'Évaluation des Modèles")
     tabs = ["Prétraitement", "Analyse", "Modélisation", "Évaluation"]
     current_tab = st.sidebar.radio("Étapes du Processus", tabs)
 
     # Vérification si les données sont disponibles pour l'analyse et la modélisation
-    df = st.session_state['df']
-    target = st.sidebar.selectbox("Choisissez la variable cible :", options=df.columns)
+    if 'df' in st.session_state and st.session_state['df'] is not None:
+        df = st.session_state['df']
+        # Vérifiez que df contient des données avant de procéder
+        if not df.empty:
+            target = st.sidebar.selectbox("Choisissez la variable cible :", options=df.columns)
 
     # Séparer les features et la target pour les prochaines étapes
-    X = df.drop(columns=[target])
-    y = df[target]
+            X = df.drop(columns=[target])
+            y = df[target]
 
     # Gérer les onglets et progression séquentielle
     if current_tab == "Prétraitement":
@@ -56,4 +59,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main_reg()

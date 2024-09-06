@@ -5,10 +5,9 @@ from sklearn.impute import SimpleImputer
 
 
 # Configuration de la page principale
-"""
-def config_page():
-    st.set_page_config(page_title="Préparation des Données", layout="wide")
-"""
+#def config_page():
+    #st.set_page_config(page_title="Préparation des Données", layout="wide")
+
 
 # Définition des couleurs
 def define_colors():
@@ -30,45 +29,62 @@ def define_colors():
 def run_preprocessing():
     #config_page()
     colors = define_colors()
-    uploaded_file = st.sidebar.file_uploader("Téléchargez votre fichier CSV", type=["csv"])
+    df = load_dataset_option()
 
-    if uploaded_file is not None:
-        df = load_data(uploaded_file)
-        if df is not None:
-            display_data_overview(df)
-            selected_columns = select_columns(df)
+    if df is not None:
+        st.write("Informations sur le Dataset")
+        display_data_overview(df)
+        st.write(" Le nombre de lignes et de colonnes")
+        st.write(pd.DataFrame({"Nombre de lignes": [df.shape[0]], "Nombre de colonnes": [df.shape[1]]}))
 
-            if selected_columns:
-                clean_data(df, selected_columns, colors)
+        st.write("Les types de données")
+        st.write(pd.DataFrame(df.dtypes))
+
+        selected_columns = select_columns(df)
+
+        if selected_columns:
+            clean_data(df, selected_columns, colors)
+            if st.checkbox("Voulez-vous télécharger le fichier traité ?"):
                 download_processed_data(df)
-                st.session_state['df'] = df  # Stocke les données dans la session
-            else:
-                st.write("Veuillez sélectionner des colonnes pour le traitement.")
+        else:
+            st.warning("Veuillez sélectionner des colonnes pour le traitement avant de continuer.")
+
+
+# Fonction pour charger le fichier de diabète ou un fichier propre
+def load_dataset_option():
+    option = st.radio("Choisissez un dataset:", ("Fichier Diabète", "Charger votre propre fichier CSV"))
+    if option == "Fichier Diabète":
+        try:
+            df = pd.read_csv(r"C:\Users\orouk\PycharmProjects\ProjetDigi_ML_Streamilt\regression\data\diabete.csv")
+  # Assurez-vous que le fichier "diabetes.csv" est dans le bon répertoire
+            st.write("Dataset Diabète chargé avec succès.")
+            st.session_state['df'] = df # Initialiser st.session_state['df']
+            return df
+        except FileNotFoundError:
+            st.error("Erreur : Le fichier 'diabetes.csv' est introuvable.")
+            return None
+    elif option == "Charger votre propre fichier CSV":
+        uploaded_file = st.sidebar.file_uploader("Téléchargez votre fichier CSV", type=["csv"])
+        if uploaded_file is not None:
+            return load_data(uploaded_file)
+    return None
 
 
 # Fonction pour charger les données
 def load_data(uploaded_file):
     try:
         df = pd.read_csv(uploaded_file)
+        st.write("Fichier chargé avec succès.")
         return df
     except Exception as e:
         st.write(f"Erreur lors du chargement du fichier : {e}")
         return None
-
 
 # Fonction pour afficher l'aperçu des données et des informations
 def display_data_overview(df):
     st.title("Préparation des Données")
     st.write("**Aperçu des données :**")
     st.write(df.head())
-
-    st.write("**Informations sur le dataset :**")
-    buffer = st.empty()  # Pour afficher l'info du dataset proprement
-    buffer.text(df.info())  # Peut nécessiter un hack pour mieux afficher sur Streamlit
-
-    st.write(f"Nombre de lignes : {df.shape[0]}")
-    st.write(f"Nombre de colonnes : {df.shape[1]}")
-
 
 # Fonction pour sélectionner les colonnes pour le traitement
 def select_columns(df):
@@ -86,25 +102,33 @@ def clean_data(df, selected_columns, colors):
                     unsafe_allow_html=True)
 
         # Affichage des valeurs manquantes
-        if st.checkbox("Afficher les valeurs manquantes"):
+        st.write("Valeurs manquantes")
+        st.write(df[selected_columns].isnull().sum())
+        #else:
+            #st.write("**Imputation des valeurs manquantes :**")
+            #st.write(df[selected_columns].isnull().sum())
+            #show_data_cleaning_options(df, selected_columns)
+
+        if df[selected_columns].isnull().sum().sum() == 0:
+            st.write("Vous n'avez pas de valeurs manquantes.")
+            if st.checkbox(" Souhaitez-vous afficher les options de nettoyage ?"):
+                show_data_cleaning_options(df, selected_columns)
+        else:
+            st.write("**Imputation des valeurs manquantes :**")
             st.write(df[selected_columns].isnull().sum())
+            show_data_cleaning_options(df, selected_columns)
 
-        # Imputation des valeurs manquantes
-        impute_missing_values(df, selected_columns)
+            st.markdown('</div>', unsafe_allow_html=True)
 
-        # Gestion des lignes/colonnes manquantes
-        manage_missing_data(df, selected_columns)
 
-        # Vérification des types de données
-        if st.checkbox("Afficher les types de données actuels"):
-            st.write(df.dtypes)
-
-        st.markdown('</div>', unsafe_allow_html=True)
+# Fonction pour montrer les options de nettoyage des données
+def show_data_cleaning_options(df, selected_columns):
+    impute_missing_values(df, selected_columns)
+    manage_missing_data(df, selected_columns)
 
 
 # Fonction pour imputer les valeurs manquantes
 def impute_missing_values(df, selected_columns):
-    st.write("**Imputation des valeurs manquantes :**")
     imputation_strategy = st.selectbox(
         "Choisissez la méthode d'imputation",
         ["Aucune", "Moyenne", "Médiane", "Valeur exacte"]
@@ -130,7 +154,6 @@ def impute_missing_values(df, selected_columns):
 
 # Fonction pour gérer les valeurs manquantes
 def manage_missing_data(df, selected_columns):
-    st.write("**Gestion des valeurs manquantes :**")
     if st.button("Supprimer les lignes avec des valeurs manquantes"):
         df.dropna(subset=selected_columns, inplace=True)
         st.write("Lignes contenant des valeurs manquantes supprimées.")
@@ -142,7 +165,6 @@ def manage_missing_data(df, selected_columns):
 
 # Fonction pour télécharger les données traitées
 def download_processed_data(df):
-    st.write("**Télécharger le fichier traité :**")
     csv = df.to_csv(index=False).encode('utf-8')
     st.download_button(
         label="Télécharger le fichier CSV",
@@ -153,5 +175,5 @@ def download_processed_data(df):
 
 
 # Appel de la fonction principale pour le module de préprocessing
-"""if __name__ == "__main__":
-    preprocessing_module()"""
+if __name__ == "__main__":
+    run_preprocessing()
