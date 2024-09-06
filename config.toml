@@ -1,0 +1,10 @@
+[theme couleur Diginamic charte graphique]
+primaryColor = "#0033A0" # Bleu foncé
+backgroundColor = "#F4F4F4" # Gris clair
+secondaryBackgroundColor = "#FFFFFF" # Blanc
+textColor = "#333333" # Gris foncé
+font = "sans serif"
+
+[sidebar]
+backgroundColor = "#F4F4F4" # Gris clair
+
