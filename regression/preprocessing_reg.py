@@ -111,7 +111,7 @@ def clean_data(df, selected_columns, colors):
 
         if df[selected_columns].isnull().sum().sum() == 0:
             st.write("Vous n'avez pas de valeurs manquantes.")
-            if st.checkbox(" Souhaitez-vous afficher les options de nettoyage ?"):
+            if st.checkbox("Afficher les options de nettoyage"):
                 show_data_cleaning_options(df, selected_columns)
         else:
             st.write("**Imputation des valeurs manquantes :**")

@@ -8,15 +8,15 @@ from scipy.stats import normaltest
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 import plotly.figure_factory as ff
 import statsmodels.api as sm
-"""
+
 # Titre de la sous-page
 st.title("Analyse de Données : Exploration et analyses visuelles des données pour la Régression")
 
 # Phrase explicative d'en-tête
 st.markdown("""
-#Bienvenue sur la page d'analyse des données. Cette section vous permet d'explorer, visualiser et comprendre
-#les caractéristiques du jeu de données avant la modélisation. L'objectif est de mettre en évidence les relations entre les variables,
-#d'identifier les tendances et les anomalies, et de préparer les données pour les étapes de régression.
+Bienvenue sur la page d'analyse des données. Cette section vous permet d'explorer, visualiser et comprendre
+les caractéristiques du jeu de données avant la modélisation. L'objectif est de mettre en évidence les relations entre les variables,
+d'identifier les tendances et les anomalies, et de préparer les données pour les étapes de régression.
 """)
 
 # Fonction pour analyse descriptive
@@ -93,8 +93,10 @@ def run_data_analysis(X, y):
     analyse_target(y)
     interactive_plots(X, y)
 
-#run_data_analysis(X, y)"""
+#run_data_analysis(X, y)
 
+
+"""
 import streamlit as st
 import pandas as pd
 import seaborn as sns
@@ -218,6 +220,8 @@ def check_normalization(X):
 # Appel de la fonction principale si le module est exécuté directement
 if __name__ == "__main__":
     run_data_analysis(st.session_state['df'].drop(columns=['target']), st.session_state['df']['target'])
+
+"""
 
 """def display_missing_data(X):
     st.subheader("Analyse des Données Manquantes")
