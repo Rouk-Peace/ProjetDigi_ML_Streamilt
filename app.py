@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from PIL import Image
-from reg import main  # Import de la fonction main depuis reg.py
+from reg import main_reg  # Import de la fonction main depuis reg.py
 
 # Configuration de la page principale
 st.set_page_config(page_title="PLAYGROUND ML", layout="wide", page_icon="🤖")
