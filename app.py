@@ -1,10 +1,10 @@
 import streamlit as st
 import pandas as pd
 from PIL import Image
-from regression.reg import main_reg
+import regression.reg as reg
 
 # Configuration de la page principale
-st.set_page_config(page_title="PLAYGROUND ML", layout="wide", page_icon="🤖")
+#st.set_page_config(page_title="PLAYGROUND ML", layout="wide", page_icon="🤖")
 
 # Chemins vers les images
 logo_path = 'img/diginamic.jpg'
@@ -18,10 +18,10 @@ banners = {
 
 # Chargement des datasets prédéfinis
 def load_wine_data():
-    return pd.read_csv("/Users/sabaaziri/Downloads/streamlit/data/vin.csv")
+    return pd.read_csv("/regression/data/vin.csv")
 
 def load_diabetes_data():
-    return pd.read_csv("/Users/sabaaziri/Downloads/streamlit/data/diabete.csv")
+    return pd.read_csv("regression/data/diabete.csv")
 
 # Sidebar: Logo et options
 st.sidebar.image(logo_path, width=195)
@@ -37,7 +37,7 @@ if dataset_choice == "Vin":
 elif dataset_choice == "Diabète":
     data = load_diabetes_data()
     st.sidebar.success("Dataset 'Diabète' chargé avec succès.")
-else:
+'''else:
     uploaded_file = st.sidebar.file_uploader("Téléchargez votre fichier CSV", type=["csv"])
     if uploaded_file is not None:
         data = pd.read_csv(uploaded_file)
@@ -45,7 +45,7 @@ else:
     else:
         data = None
         st.sidebar.info("Veuillez télécharger un fichier CSV pour commencer et tester les fonctionnalités.")
-
+'''
 # Définition du sommaire dans la sidebar
 pages = ["Accueil", "Équipe", "Classification", "Régression", "Nail's detection (optionnel)", "Conclusion"]
 page = st.sidebar.radio("Naviguez vers :", pages)
@@ -145,7 +145,8 @@ elif page == "Classification":
 
 # Régression
 elif page == "Régression":
-    st.title("Régression")
+    reg.main_reg()
+    '''st.title("Régression")
     st.write("Explorez différentes techniques de regression.")
     if data is not None:
         st.write("Aperçu du dataset sélectionné :")
@@ -174,7 +175,7 @@ elif page == "Régression":
         st.write("**Évaluation des modèles de régression :**")
         # Inclure les fonctions pour évaluer les performances des modèles de régression
         st.write("Évaluation des performances du modèle...")
-        # Code pour évaluation, par exemple: calcul des métriques de performance
+        # Code pour évaluation, par exemple: calcul des métriques de performance'''
         
 
 

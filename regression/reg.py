@@ -1,8 +1,8 @@
 import streamlit as st
-import preprocessing_reg as prep
-import analyse_reg as analyse
-import models_reg as model
-import evaluation_reg as eval
+import regression.preprocessing_reg as prep
+import regression.analyse_reg as analyse
+import regression.models_reg as model
+import regression.evaluation_reg as eval
 
 # Configuration de la page principale
 #st.set_page_config(page_title="Régression : Prétraitement, Analyse, Modélisation et Évaluation", layout="wide")
