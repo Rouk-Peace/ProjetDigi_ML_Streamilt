@@ -42,7 +42,7 @@ def run_evaluation():
         plot_coefficients(model, X_test.columns)
 
     # Boutons de navigation et comparaison des modèles
-    if st.button("Comparer les modèles"):
+    if st.button("Comparer les modèles de regression"):
          # Récupération de X et y depuis st.session_state
         if 'X' in st.session_state and 'y' in st.session_state:
             X = st.session_state['X']
