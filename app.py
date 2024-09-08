@@ -6,6 +6,7 @@ import regression.reg as reg
 # Configuration de la page principale
 #st.set_page_config(page_title="PLAYGROUND ML", layout="wide", page_icon="🤖")
 
+
 # Chemins vers les images
 logo_path = 'img/diginamic.jpg'
 background_image_path = "img/computer-technology-business-website-header.jpg"
@@ -102,7 +103,7 @@ elif page == "Équipe":
     
     Chaque membre de notre équipe a joué un rôle crucial dans le développement technique ainsi que dans l'optimisation de l'interface utilisateur et de l'expérience utilisateur :
 
-    - **Roukyatou Oumourou** a dirigé les efforts en science des données pour créer des modèles de classification et de régression robustes. Elle a également contribué à l'optimisation des visualisations pour rendre les résultats plus accessibles et compréhensibles.
+    - **Roukyatou Omorou** a dirigé les efforts en science des données pour créer des modèles de classification et de régression robustes. Elle a également contribué à l'optimisation des visualisations pour rendre les résultats plus accessibles et compréhensibles.
     - **Nacer Messaoui** a travaillé sur le développement des algorithmes de machine learning et a supervisé l'intégration des modèles dans l'application. Il a également assuré la performance des modèles en les testant avec divers jeux de données.
     - **Issam Harchi** a été responsable de l'évaluation des modèles et de l'amélioration de leur précision. Il a également contribué à l'optimisation de l'interface utilisateur pour une meilleure expérience.
     - **Saba Aziri** a supervisé la mise en œuvre de l'interface utilisateur et a intégré des éléments de design interactifs pour rendre l'application visuellement attrayante et facile à utiliser. Il a également ajouté des fonctionnalités amusantes pour améliorer l'interaction.
