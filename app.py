@@ -1,18 +1,19 @@
 import streamlit as st
 import pandas as pd
 from PIL import Image
+from regression.reg import main_reg
 
 # Configuration de la page principale
 st.set_page_config(page_title="PLAYGROUND ML", layout="wide", page_icon="🤖")
 
 # Chemins vers les images
-logo_path = '/Users/sabaaziri/Downloads/streamlit/img/Logo_Diginamic.jpg'
-background_image_path = "/Users/sabaaziri/Downloads/streamlit/img/computer-technology-business-website-header.jpg"
-team_image_path = '/Users/sabaaziri/Downloads/streamlit/img/team work.jpg'
+logo_path = 'img/diginamic.jpg'
+background_image_path = "img/computer-technology-business-website-header.jpg"
+team_image_path = 'img/team work.jpg'
 
 # Chemins vers les bannières
 banners = {
-    "Nail's detection (optionnel)": "/Users/sabaaziri/Downloads/streamlit/img/roboflow.png",
+    "Nail's detection (optionnel)": "img/roboflow.png",
 }
 
 # Chargement des datasets prédéfinis
