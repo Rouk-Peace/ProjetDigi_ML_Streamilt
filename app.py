@@ -2,9 +2,10 @@ import streamlit as st
 import pandas as pd
 from PIL import Image
 from reg import main_reg  # Import de la fonction main depuis reg.py
+from cls import main_cls  # Import de la fonction main depuis cls.py
 
 # Configuration de la page principale
-st.set_page_config(page_title="PLAYGROUND ML", layout="wide", page_icon="🤖")
+#st.set_page_config(page_title="PLAYGROUND ML", layout="wide", page_icon="🤖")
 
 # Chemins vers les images
 logo_path = 'C:/Users/ELite/Workspace ML/Projet_streamlit_ML/ProjetDigi_ML_Streamilt/img/Logo_Diginamic.jpg'
@@ -95,27 +96,23 @@ elif page == "Équipe":
         for name, link in team_members.items():
             st.markdown(f"- [{name}]({link})")
 
-# Classification
+# classification
 elif page == "Classification":
     st.title("Classification")
     st.write("Explorez différentes techniques de classification.")
-    
+
     if data is not None:
         st.write("Aperçu du dataset sélectionné :")
         st.dataframe(data.head())
+        
+        # Définir X et y pour la régression
+        X = data.drop(columns=['target'])  # Assurez-vous que 'target' est bien la colonne de la variable cible
+        y = data['target']
+        
+        # Appel de la fonction main() depuis le fichier reg.py
+        main_cls()
 
-    # Sous-sections pour Classification
-    with st.expander("Prétraitement des Données"):
-        st.write("Prétraitement des données pour la classification :")
-        
-    with st.expander("Analyse et Visualisation"):
-        st.write("Visualisation des résultats de classification :")
-        
-    with st.expander("Modélisation"):
-        st.write("Modélisation des données :")
-        
-    with st.expander("Évaluation"):
-        st.write("Évaluation des modèles de classification :")
+
 
 # Régression
 elif page == "Régression":
@@ -131,7 +128,7 @@ elif page == "Régression":
         y = data['target']
         
         # Appel de la fonction main() depuis le fichier reg.py
-        main()
+        main_reg()
 
 # Nail's detection (optionnel)
 elif page == "Nail's detection (optionnel)":
