@@ -1,62 +1,73 @@
 import streamlit as st
-import preprocessing_reg as prep
-import analyse_reg as analyse
-import models_reg as model
-import evaluation_reg as eval
+from preprocessing_reg import run_preprocessing
+from analyse_reg import run_analyse
+from models_reg import run_models
+from evaluation_reg import run_evaluation
 
-# Configuration de la page principale
-#st.set_page_config(page_title="Régression : Prétraitement, Analyse, Modélisation et Évaluation", layout="wide")
+# Configuration de la page
+st.set_page_config(page_title="Projet ML: Modèles de Regression", layout="wide")
+
+# Crée un dictionnaire de pages pour lier les noms aux fonctions
+pages = {
+    "Prétraitement": run_preprocessing,
+    "Analyse": run_analyse,
+    "Modélisation": run_models,
+    "Évaluation": run_evaluation
+}
+
+# Initialiser l'état de la page si ce n'est pas déjà fait
+if "current_page" not in st.session_state:
+    st.session_state.current_page = "Prétraitement"
+    st.session_state.preprocessing_done = False
+
+# Fonction pour changer de page
+def navigate_to(page):
+    st.session_state.current_page = page
+
+# Fonction pour préparer les données pour l'analyse
+def prepare_data():
+    if 'df_cleaned' in st.session_state:
+        df = st.session_state['df_cleaned']
+        target = st.sidebar.selectbox("Sélectionnez la target pour continuer :", options=df.columns)
+        X = df.drop(columns=[target])
+        y = df[target]
+        return X, y
+    else:
+        st.warning("Veuillez effectuer le prétraitement avant l'analyse.")
+        return None, None
 
 
-def main_reg():
-    # Crée les onglets pour chaque étape
-    st.title("Régression : De la Préparation à l'Évaluation des Modèles")
-    tabs = ["Prétraitement", "Analyse", "Modélisation", "Évaluation"]
-    current_tab = st.sidebar.radio("Étapes du Processus", tabs)
 
-    # Vérification si les données sont disponibles pour l'analyse et la modélisation
-    if 'df' in st.session_state and st.session_state['df'] is not None:
-        df = st.session_state['df']
-        # Vérifiez que df contient des données avant de procéder
-        if not df.empty:
-            target = st.sidebar.selectbox("Choisissez la variable cible :", options=df.columns)
+# Créer une barre latérale pour la navigation séquentielle
+st.sidebar.title("Navigation entre les Etapes ")
 
-    # Séparer les features et la target pour les prochaines étapes
-            X = df.drop(columns=[target])
-            y = df[target]
+# Boutons séquentiels dans la sidebar pour suivre le processus ML
+if st.sidebar.button("1. Prétraitement"):
+    navigate_to("Prétraitement")
 
-    # Gérer les onglets et progression séquentielle
-    if current_tab == "Prétraitement":
-        prep.run_preprocessing()  # Appel de la fonction de prétraitement
-        if 'df' in st.session_state:
-            st.session_state['preprocessed'] = True  # Marquer comme complété
+if st.sidebar.button("2. Analyse"):
+    navigate_to("Analyse")
 
+if st.sidebar.button("3. Modélisation"):
+    navigate_to("Modélisation")
 
-    elif current_tab == "Analyse":
-        if st.session_state.get('preprocessed', False):
-            if 'df' in st.session_state:
-                X = st.session_state['df'].drop(columns=[target])
-                y = st.session_state['df'][target]
-            analyse.run_data_analysis(X, y)  # Appel de la fonction d'analyse
-            if st.button("Passer à la modélisation"):
-                st.session_state['analysis_done'] = True
+if st.sidebar.button("4. Évaluation"):
+    navigate_to("Évaluation")
+
+# Appelle la fonction correspondante à la page sélectionnée
+if st.session_state.current_page in pages:
+    if st.session_state.current_page == "Analyse" or st.session_state.current_page == "Modélisation":
+
+        X, y = prepare_data()
+        if X is not None and y is not None:
+            pages[st.session_state.current_page](X, y)
+    else:
+        if st.session_state.current_page == "Prétraitement":
+            pages["Prétraitement"]()
+            st.session_state.preprocessing_done = True  # Marquer le prétraitement comme terminé après exécution
         else:
-            st.warning("Veuillez compléter l'étape de prétraitement pour continuer.")
+            pages[st.session_state.current_page]()
+else:
 
-    elif current_tab == "Modélisation":
-        if st.session_state.get('analysis_done', False):
-            model.run_model_selection(X, y)  # Appel de la fonction de modélisation
-            if st.button("Passer à l'évaluation"):
-                st.session_state['modeling_done'] = True
-        else:
-            st.warning("Veuillez compléter l'étape d'analyse pour continuer.")
+    st.write("Bienvenue sur le projet de Machine Learning. Sélectionne une section pour commencer.")
 
-    elif current_tab == "Évaluation":
-        if st.session_state.get('modeling_done', False):
-            eval.run_model_evaluation()  # Appel de la fonction d'évaluation
-        else:
-            st.warning("Veuillez compléter l'étape de modélisation pour continuer.")
-
-
-if __name__ == "__main__":
-    main_reg()
