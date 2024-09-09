@@ -4,31 +4,15 @@ import numpy as np
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OneHotEncoder, LabelEncoder
 
-
 # Configuration de la page principale
-# def config_page():
-#     st.set_page_config(page_title="Préparation des Données", layout="wide")
-
-# Définition des couleurs
-def define_colors():
-    return {
-        'background': '#F5F5F5',
-        'block_bg': '#FFFFFF',
-        'text': '#1E3D59',
-        'button_bg': '#1E3D59',
-        'button_text': '#FFFFFF',
-        'button_hover': '#172A40',
-        'expander_bg': '#E8F0FE',
-        'title_text': '#1E3D59',
-        'subtitle_text': '#A78F41',
-        'border_color': '#E0E0E0',
-    }
+#def config_page():
+#    st.set_page_config(page_title="Préparation des Données", layout="wide")
 
 
 # Fonction principale pour la gestion du prétraitement
 def run_preprocessing_cls():
-    # config_page()
-    colors = define_colors()
+    #config_page()
+    #colors = define_colors()
     df = load_dataset_option()
 
     if df is not None:
@@ -41,12 +25,11 @@ def run_preprocessing_cls():
 
         selected_columns = select_columns(df)
         if selected_columns:
-            clean_data(df, selected_columns, colors)
+            clean_data(df, selected_columns)
             if st.checkbox("Voulez-vous télécharger le fichier traité ?"):
                 download_processed_data(df)
         else:
             st.warning("Veuillez sélectionner des colonnes pour le traitement avant de continuer.")
-
 
 # Fonction pour charger le fichier de vin ou un fichier propre
 def load_dataset_option():
@@ -57,7 +40,7 @@ def load_dataset_option():
             df = pd.read_csv(r"C:/Users/ELite/Workspace ML/Projet_streamlit_ML/ProjetDigi_ML_Streamilt/data/vin.csv")
             # Assurez-vous que le fichier "vin.csv" est dans le bon répertoire
             st.write("Dataset vin chargé avec succès.")
-            st.session_state['df'] = df  # Initialiser st.session_state['df']
+            st.session_state['df'] = df # Initialiser st.session_state['df']
             return df
         except FileNotFoundError:
             st.error("Erreur : Le fichier 'vin.csv' est introuvable.")
@@ -68,7 +51,6 @@ def load_dataset_option():
             return load_data(uploaded_file)
     return None
 
-
 # Fonction pour charger les données
 def load_data(uploaded_file):
     try:
@@ -78,18 +60,15 @@ def load_data(uploaded_file):
         st.write(f"Erreur lors du chargement du fichier : {e}")
         return None
 
-
 # Fonction pour afficher l'aperçu des données et des informations
 def display_data_overview(df):
     st.title("Préparation des Données")
     st.write("**Aperçu des données :**")
     st.write(df.head())
     st.write("**Informations sur le dataset :**")
-    buffer = st.empty()
-    buffer.text(df.info())
-    st.write(f"Nombre de lignes : {df.shape[0]}")
-    st.write(f"Nombre de colonnes : {df.shape[1]}")
-
+    
+    #st.write(f"Nombre de lignes : {df.shape[0]}")
+    #st.write(f"Nombre de colonnes : {df.shape[1]}")
 
 # Fonction pour sélectionner les colonnes pour le traitement
 def select_columns(df):
@@ -99,12 +78,11 @@ def select_columns(df):
         default=df.columns.tolist()
     )
 
-
 # Fonction pour nettoyer les données : gestion des valeurs manquantes et encodage
-def clean_data(df, selected_columns, colors):
+def clean_data(df, selected_columns):
     with st.expander("Nettoyage des Données", expanded=True):
-        st.markdown(f'<div style="background-color:{colors["block_bg"]}; padding: 10px; border-radius: 5px;">',
-                    unsafe_allow_html=True)
+        #st.markdown(f'<div style="background-color:{colors["block_bg"]}; padding: 10px; border-radius: 5px;">',
+                    #unsafe_allow_html=True)
 
         # Affichage des valeurs manquantes
         if st.checkbox("Afficher les valeurs manquantes"):
@@ -121,7 +99,6 @@ def clean_data(df, selected_columns, colors):
             st.write(df.dtypes)
 
         st.markdown('</div>', unsafe_allow_html=True)
-
 
 # Fonction pour imputer les valeurs manquantes
 def impute_missing_values(df, selected_columns):
@@ -148,11 +125,10 @@ def impute_missing_values(df, selected_columns):
             df[selected_columns] = imputer.fit_transform(df[selected_columns])
             st.write(f"Valeurs manquantes imputées avec la valeur {value}.")
 
-
 # Fonction pour gérer les valeurs manquantes
 def manage_missing_data(df, selected_columns):
     st.write("**Gestion des valeurs manquantes :**")
-
+    
     # Afficher les statistiques sur les valeurs manquantes
     missing_data = df[selected_columns].isnull().sum()
     st.write("**Valeurs manquantes par colonne :**")
@@ -179,7 +155,7 @@ def manage_missing_data(df, selected_columns):
             "Choisissez une méthode d'imputation des valeurs manquantes :",
             options=["Moyenne", "Médiane", "Valeur exacte"]
         )
-
+        
         if impute_strategy == "Moyenne":
             if st.button("Imputer avec la moyenne"):
                 imputer = SimpleImputer(strategy='mean')
@@ -203,48 +179,47 @@ def manage_missing_data(df, selected_columns):
         st.write("Aucune action n'a été choisie pour les valeurs manquantes.")
 
 
+
 # Fonction pour modifier et encoder les données dans la colonne 'target'
 def modify_and_encode_target(df):
     if 'target' in df.columns:
         # Correction des valeurs
         df['target'] = df['target'].replace('Vin éuilibré', 'Vin équilibré')
-
+        
         # Affichage des valeurs distinctes avant encodage
         st.write("**Valeurs distinctes de la colonne 'target' après correction :**")
         st.write(df['target'].unique())
-
+        
         # Encodage de la colonne 'target'
         le = LabelEncoder()
         df['target_encoded'] = le.fit_transform(df['target'])
-
+        
         # Affichage des valeurs distinctes après encodage
         st.write("**Valeurs distinctes de la colonne 'target_encoded' :**")
         st.write(df['target_encoded'].unique())
-
+        
         st.write("**Aperçu de la colonne 'target' après modification et encodage :**")
         st.write(df[['target', 'target_encoded']].head())
     else:
         st.warning("La colonne 'target' n'est pas présente dans le DataFrame.")
 
-
 # Fonction pour télécharger les données traitées
 def download_processed_data(df):
     st.write("**Télécharger le fichier traité :**")
-
+    
     # Modifier et encoder les données avant le téléchargement
     modify_and_encode_target(df)
-
+    
     # Créer le CSV avec les modifications
     csv = df.to_csv(index=False).encode('utf-8')
-
+    
     st.download_button(
         label="Télécharger le fichier CSV",
         data=csv,
         file_name='data_prepared_classification.csv',
         mime='text/csv'
     )
-
-
+    
 # Appel de la fonction principale pour le module de préprocessing
 if __name__ == "__main__":
     run_preprocessing_cls()
