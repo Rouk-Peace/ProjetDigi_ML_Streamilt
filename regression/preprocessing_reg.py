@@ -1,34 +1,18 @@
+
 import streamlit as st
 import pandas as pd
 import numpy as np
 from sklearn.impute import SimpleImputer
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 
-# Configuration de la page principale
-#def config_page():
-    #st.set_page_config(page_title="Préparation des Données", layout="wide")
-
-
-# Définition des couleurs
-def define_colors():
-    return {
-        'background': '#F5F5F5',
-        'block_bg': '#FFFFFF',
-        'text': '#1E3D59',
-        'button_bg': '#1E3D59',
-        'button_text': '#FFFFFF',
-        'button_hover': '#172A40',
-        'expander_bg': '#E8F0FE',
-        'title_text': '#1E3D59',
-        'subtitle_text': '#A78F41',
-        'border_color': '#E0E0E0',
-    }
-
-
-# Fonction principale pour la gestion du prétraitement
 def run_preprocessing():
-    #config_page()
-    colors = define_colors()
+    st.header("Prétraitement des Données")
+    #st.write("Voici les étapes de prétraitement à réaliser...")
+    # Ajoute ici les widgets spécifiques et la logique de prétraitement
+
+
     df = load_dataset_option()
 
     if df is not None:
@@ -36,26 +20,38 @@ def run_preprocessing():
         display_data_overview(df)
         st.write(" Le nombre de lignes et de colonnes")
         st.write(pd.DataFrame({"Nombre de lignes": [df.shape[0]], "Nombre de colonnes": [df.shape[1]]}))
-
         st.write("Les types de données")
         st.write(pd.DataFrame(df.dtypes))
 
         selected_columns = select_columns(df)
 
         if selected_columns:
-            clean_data(df, selected_columns, colors)
-            if st.checkbox("Voulez-vous télécharger le fichier traité ?"):
-                download_processed_data(df)
+            clean_data(df, selected_columns)
+            st.session_state['preprocessing_done'] = True  # Marque cette étape comme complétée
+            #st.success("Prétraitement terminé avec succès.")
+
         else:
             st.warning("Veuillez sélectionner des colonnes pour le traitement avant de continuer.")
 
+
+        # Si l'utilisateur souhaite télécharger le fichier traité
+        if st.checkbox("Voulez-vous télécharger le fichier traité ?") and st.session_state.get('preprocessing_done',
+                                                                                               False):
+            download_processed_data(df)
+
+        # Boutons de navigation
+
+        navigation()
+
+    else:
+        st.warning("Veuillez charger un dataset pour démarrer le prétraitement.")
 
 # Fonction pour charger le fichier de diabète ou un fichier propre
 def load_dataset_option():
     option = st.radio("Choisissez un dataset:", ("Fichier Diabète", "Charger votre propre fichier CSV"))
     if option == "Fichier Diabète":
         try:
-            df = pd.read_csv(r"C:\Users\orouk\PycharmProjects\ProjetDigi_ML_Streamilt\regression\data\diabete.csv")
+            df = pd.read_csv(r"regression/data/diabete.csv")
   # Assurez-vous que le fichier "diabetes.csv" est dans le bon répertoire
             st.write("Dataset Diabète chargé avec succès.")
             st.session_state['df'] = df # Initialiser st.session_state['df']
@@ -64,7 +60,7 @@ def load_dataset_option():
             st.error("Erreur : Le fichier 'diabetes.csv' est introuvable.")
             return None
     elif option == "Charger votre propre fichier CSV":
-        uploaded_file = st.sidebar.file_uploader("Téléchargez votre fichier CSV", type=["csv"])
+        uploaded_file = st.file_uploader("Téléchargez votre fichier CSV", type=["csv"])
         if uploaded_file is not None:
             return load_data(uploaded_file)
     return None
@@ -82,7 +78,6 @@ def load_data(uploaded_file):
 
 # Fonction pour afficher l'aperçu des données et des informations
 def display_data_overview(df):
-    st.title("Préparation des Données")
     st.write("**Aperçu des données :**")
     st.write(df.head())
 
@@ -96,18 +91,12 @@ def select_columns(df):
 
 
 # Fonction pour nettoyer les données : gestion des valeurs manquantes et encodage
-def clean_data(df, selected_columns, colors):
+def clean_data(df, selected_columns):
     with st.expander("Nettoyage des Données", expanded=True):
-        st.markdown(f'<div style="background-color:{colors["block_bg"]}; padding: 10px; border-radius: 5px;">',
-                    unsafe_allow_html=True)
 
         # Affichage des valeurs manquantes
         st.write("Valeurs manquantes")
         st.write(df[selected_columns].isnull().sum())
-        #else:
-            #st.write("**Imputation des valeurs manquantes :**")
-            #st.write(df[selected_columns].isnull().sum())
-            #show_data_cleaning_options(df, selected_columns)
 
         if df[selected_columns].isnull().sum().sum() == 0:
             st.write("Vous n'avez pas de valeurs manquantes.")
@@ -117,9 +106,10 @@ def clean_data(df, selected_columns, colors):
             st.write("**Imputation des valeurs manquantes :**")
             st.write(df[selected_columns].isnull().sum())
             show_data_cleaning_options(df, selected_columns)
-
             st.markdown('</div>', unsafe_allow_html=True)
 
+        #Sauvegarder le DataFrame nettoyé dans le session_state
+        st.session_state['df_cleaned'] = df[selected_columns]  # Sauvegarde du DataFrame après nettoyage
 
 # Fonction pour montrer les options de nettoyage des données
 def show_data_cleaning_options(df, selected_columns):
@@ -172,6 +162,13 @@ def download_processed_data(df):
         file_name='data_prepared.csv',
         mime='text/csv'
     )
+
+
+# Fonction pour la navigation
+def navigation():
+    if st.button("Etape suivante: Analyse de données"):
+        st.session_state.current_page = "Analyse"
+        st.success("Chargement de l'étape analyse !  \n Veuillez cliquer une deuxième fois pour l'afficher")  # Message d'information
 
 
 # Appel de la fonction principale pour le module de préprocessing
