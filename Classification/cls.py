@@ -1,62 +1,158 @@
 import streamlit as st
-import preprocessing_cls as prep
-import analyse_cls as analyse
-import models_cls as model
-import evaluation_cls as eval
+import pandas as pd
+from PIL import Image
+from reg import main_reg  # Import de la fonction main depuis reg.py
+from cls import main_cls  # Import de la fonction main depuis cls.py
 
 # Configuration de la page principale
-#st.set_page_config(page_title="Régression : Prétraitement, Analyse, Modélisation et Évaluation", layout="wide")
+# st.set_page_config(page_title="PLAYGROUND ML", layout="wide", page_icon="🤖")
+
+# Chemins vers les images
+logo_path = 'C:/Users/ELite/Workspace ML/Projet_streamlit_ML/ProjetDigi_ML_Streamilt/img/Logo_Diginamic.jpg'
+background_image_path = "C:/Users/ELite/Workspace ML/Projet_streamlit_ML/ProjetDigi_ML_Streamilt/img/computer-technology-business-website-header.jpg"
+team_image_path = 'C:/Users/ELite/Workspace ML/Projet_streamlit_ML/ProjetDigi_ML_Streamilt/img/team work.jpg'
+
+# Chemins vers les bannières
+banners = {
+    "Nail's detection (optionnel)": "C:/Users/ELite/Workspace ML/Projet_streamlit_ML/ProjetDigi_ML_Streamilt/img/roboflow.png",
+}
 
 
-def main_cls():
-    # Crée les onglets pour chaque étape
-    st.title("Régression : De la Préparation à l'Évaluation des Modèles")
-    tabs = ["Prétraitement", "Analyse", "Modélisation", "Évaluation"]
-    current_tab = st.sidebar.radio("Étapes du Processus", tabs)
-
-    # Vérification si les données sont disponibles pour l'analyse et la modélisation
-    if 'df' in st.session_state and st.session_state['df'] is not None:
-        df = st.session_state['df']
-        # Vérifiez que df contient des données avant de procéder
-        if not df.empty:
-            target = st.sidebar.selectbox("Choisissez la variable cible :", options=df.columns)
-
-    # Séparer les features et la target pour les prochaines étapes
-            X = df.drop(columns=[target])
-            y = df[target]
-
-    # Gérer les onglets et progression séquentielle
-    if current_tab == "Prétraitement":
-        prep.run_preprocessing()  # Appel de la fonction de prétraitement
-        if 'df' in st.session_state:
-            st.session_state['preprocessed'] = True  # Marquer comme complété
+# Chargement des datasets prédéfinis
+def load_wine_data():
+    return pd.read_csv("C:/Users/ELite/Workspace ML/Projet_streamlit_ML/ProjetDigi_ML_Streamilt/data/vin.csv")
 
 
-    elif current_tab == "Analyse":
-        if st.session_state.get('preprocessed', False):
-            if 'df' in st.session_state:
-                X = st.session_state['df'].drop(columns=[target])
-                y = st.session_state['df'][target]
-            analyse.run_data_analysis(X, y)  # Appel de la fonction d'analyse
-            if st.button("Passer à la modélisation"):
-                st.session_state['analysis_done'] = True
-        else:
-            st.warning("Veuillez compléter l'étape de prétraitement pour continuer.")
-
-    elif current_tab == "Modélisation":
-        if st.session_state.get('analysis_done', False):
-            model.run_model_selection(X, y)  # Appel de la fonction de modélisation
-            if st.button("Passer à l'évaluation"):
-                st.session_state['modeling_done'] = True
-        else:
-            st.warning("Veuillez compléter l'étape d'analyse pour continuer.")
-
-    elif current_tab == "Évaluation":
-        if st.session_state.get('modeling_done', False):
-            eval.run_model_evaluation()  # Appel de la fonction d'évaluation
-        else:
-            st.warning("Veuillez compléter l'étape de modélisation pour continuer.")
+def load_diabetes_data():
+    return pd.read_csv("C:/Users/ELite/Workspace ML/Projet_streamlit_ML/ProjetDigi_ML_Streamilt/data/diabete.csv")
 
 
-if __name__ == "__main__":
-    main_cls()
+# Sidebar: Logo et options
+st.sidebar.image(logo_path, width=195)
+st.sidebar.title("Sommaire")
+
+# Choix du dataset
+dataset_options = ["Vin", "Diabète", "Téléverser un fichier CSV"]
+dataset_choice = st.sidebar.selectbox("Choisissez un dataset ou téléversez votre propre fichier :", dataset_options)
+
+if dataset_choice == "Vin":
+    data = load_wine_data()
+    st.sidebar.success("Dataset 'Vin' chargé avec succès.")
+elif dataset_choice == "Diabète":
+    data = load_diabetes_data()
+    st.sidebar.success("Dataset 'Diabète' chargé avec succès.")
+else:
+    uploaded_file = st.sidebar.file_uploader("Téléchargez votre fichier CSV", type=["csv"])
+    if uploaded_file is not None:
+        data = pd.read_csv(uploaded_file)
+        st.sidebar.success("Fichier CSV chargé avec succès !")
+    else:
+        data = None
+        st.sidebar.info("Veuillez télécharger un fichier CSV pour commencer et tester les fonctionnalités.")
+
+# Définition du sommaire dans la sidebar
+pages = ["Accueil", "Équipe", "Classification", "Régression", "Nail's detection (optionnel)", "Conclusion"]
+page = st.sidebar.radio("Naviguez vers :", pages)
+
+# Affichage de la bannière pour chaque page
+banner_path = banners.get(page)
+if banner_path:
+    st.image(banner_path, use_column_width=True)
+
+# Accueil
+if page == "Accueil":
+    st.title("Playground Machine Learning 🤖")
+    st.image(background_image_path, use_column_width=True)
+    st.write("""
+    Bienvenue dans l'application dédiée à l'analyse et à la modélisation de données.
+
+    Vous pouvez Naviguez à l'aide du menu à gauche pour explorer toutes les sections :
+
+    - **Classification** : Explorez différents modèles pour des problèmes de classification.
+    - **Régression** : Analysez des modèles de régression pour les prédictions continues.
+    - **Nail's detection** (optionnel) : Détection d'objets dans des images à l'aide de modèles de vision.
+    """)
+
+# Équipe
+elif page == "Équipe":
+    st.title("Présentation de l'équipe")
+
+    st.write("""
+    Notre équipe est composée de passionnés de science des données, chacun ayant un rôle clé dans la réalisation de ce projet.
+    Voici les membres de notre équipe, leurs spécialités et leurs contributions :
+    """)
+
+    col1, col2 = st.columns([1, 2])
+
+    with col1:
+        image = Image.open(team_image_path)
+        st.image(image, caption="Équipe Data_Science", use_column_width=True)
+
+    with col2:
+        team_members = {
+            "Roukyatou Oumourou : Data Scientist": "https://www.linkedin.com/in/roukayatou-omorou/",
+            "Nacer Messaoui : Data Scientist": "https://www.linkedin.com/in/nacer-messaoui/",
+            "Issam Harchi : Data Scientist": "https://www.linkedin.com/in/issam-harchi-a939b9100/",
+            "Saba Aziri : Data Analyst": "https://www.linkedin.com/in/azirisaba/"
+        }
+
+        for name, link in team_members.items():
+            st.markdown(f"- [{name}]({link})")
+
+# classification
+elif page == "Classification":
+    st.title("Classification")
+    st.write("Explorez différentes techniques de classification.")
+
+    if data is not None:
+        st.write("Aperçu du dataset sélectionné :")
+        st.dataframe(data.head())
+
+        # Définir X et y pour la régression
+        X = data.drop(columns=['target'])  # Assurez-vous que 'target' est bien la colonne de la variable cible
+        y = data['target']
+
+        # Appel de la fonction main() depuis le fichier reg.py
+        main_cls()
+
+
+
+# Régression
+elif page == "Régression":
+    st.title("Régression")
+    st.write("Explorez différentes techniques de régression.")
+
+    if data is not None:
+        st.write("Aperçu du dataset sélectionné :")
+        st.dataframe(data.head())
+
+        # Définir X et y pour la régression
+        X = data.drop(columns=['target'])  # Assurez-vous que 'target' est bien la colonne de la variable cible
+        y = data['target']
+
+        # Appel de la fonction main() depuis le fichier reg.py
+        main_reg()
+
+# Nail's detection (optionnel)
+elif page == "Nail's detection (optionnel)":
+    st.title("Nail's detection")
+    st.write("""
+    Intégration avec Roboflow pour la Détection d'Ongles
+    """)
+
+# Conclusion
+elif page == "Conclusion":
+    st.title("Conclusion")
+
+    st.write("""
+    ### Méthodologie
+    Notre projet a été géré en utilisant la méthodologie Agile, avec des sprints réguliers.
+    """)
+
+# Footer simplifié
+st.markdown("""
+    <style>
+    footer {visibility: hidden;}
+    .css-12ttj6m {visibility: hidden;}
+    </style>
+    """, unsafe_allow_html=True)

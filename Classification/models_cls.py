@@ -6,19 +6,21 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import pandas as pd
 
+
 # Fonction principale pour la sous-page des modèles de classification
 def run_model_selection(X, y):
     st.title("Sélection et Entraînement des Modèles de Classification")
 
     # Sélection des variables à inclure dans le modèle
     st.sidebar.header("Sélection de Features")
-    selected_features = st.sidebar.multiselect("Choisissez les variables à inclure dans le modèle :", options=X.columns, default=list(X.columns))
+    selected_features = st.sidebar.multiselect("Choisissez les variables à inclure dans le modèle :", options=X.columns,
+                                               default=list(X.columns))
     X = X[selected_features]  # Mise à jour des données avec les features sélectionnées
 
     # Sélection du modèle
     st.subheader("Choix du Modèle de Classification")
-    
-    model_choice = st.selectbox("Sélectionnez le modèle de classification :", 
+
+    model_choice = st.selectbox("Sélectionnez le modèle de classification :",
                                 ["Régression Logistique", "SVM", "Forêt Aléatoire"])
 
     model = None
@@ -36,7 +38,6 @@ def run_model_selection(X, y):
         model = RandomForestClassifier(n_estimators=n_estimators)
         st.markdown(f"**Modèle sélectionné : Forêt Aléatoire avec {n_estimators} arbres**")
 
-
     # 3. Entraînement du modèle
     if st.button("Entraîner le Modèle"):
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -50,6 +51,7 @@ def run_model_selection(X, y):
         # Sauvegarde du modèle
         if st.checkbox("Sauvegarder le Modèle Entraîné"):
             save_model(model, model_choice, params)
+
 
 # Fonction pour sauvegarder le modèle
 def save_model(model, model_name, params):
