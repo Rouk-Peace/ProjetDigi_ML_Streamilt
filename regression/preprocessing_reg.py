@@ -51,7 +51,7 @@ def load_dataset_option():
     option = st.radio("Choisissez un dataset:", ("Fichier Diabète", "Charger votre propre fichier CSV"))
     if option == "Fichier Diabète":
         try:
-            df = pd.read_csv(r"C:\Users\orouk\PycharmProjects\ProjetDigi_ML_Streamilt\regression\data\diabete.csv")
+            df = pd.read_csv(r"regression/data/diabete.csv")
   # Assurez-vous que le fichier "diabetes.csv" est dans le bon répertoire
             st.write("Dataset Diabète chargé avec succès.")
             st.session_state['df'] = df # Initialiser st.session_state['df']
