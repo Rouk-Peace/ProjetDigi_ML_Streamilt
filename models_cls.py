@@ -4,7 +4,19 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 import pandas as pd
+
+# Fonction pour encoder les données catégorielles
+def encode_data(X):
+    X_encoded = X.copy()
+    for col in X_encoded.select_dtypes(include=['object']).columns:
+        if st.checkbox(f"Utiliser One-Hot Encoding pour {col} ?", value=True):
+            X_encoded = pd.get_dummies(X_encoded, columns=[col], drop_first=True)
+        else:
+            le = LabelEncoder()
+            X_encoded[col] = le.fit_transform(X_encoded[col])
+    return X_encoded
 
 # Fonction principale pour la sous-page des modèles de classification
 def run_model_selection(X, y):
@@ -14,6 +26,9 @@ def run_model_selection(X, y):
     st.sidebar.header("Sélection de Features")
     selected_features = st.sidebar.multiselect("Choisissez les variables à inclure dans le modèle :", options=X.columns, default=list(X.columns))
     X = X[selected_features]  # Mise à jour des données avec les features sélectionnées
+
+    # Encodage des variables catégorielles
+    X_encoded = encode_data(X)
 
     # Sélection du modèle
     st.subheader("Choix du Modèle de Classification")
@@ -36,10 +51,9 @@ def run_model_selection(X, y):
         model = RandomForestClassifier(n_estimators=n_estimators)
         st.markdown(f"**Modèle sélectionné : Forêt Aléatoire avec {n_estimators} arbres**")
 
-
-    # 3. Entraînement du modèle
+    # Entraînement du modèle
     if st.button("Entraîner le Modèle"):
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        X_train, X_test, y_train, y_test = train_test_split(X_encoded, y, test_size=0.2, random_state=42)
         model.fit(X_train, y_train)
         st.session_state['model'] = model
         st.session_state['X_test'] = X_test
@@ -47,12 +61,18 @@ def run_model_selection(X, y):
         st.session_state['y_pred'] = model.predict(X_test)
         st.success("Modèle entraîné avec succès !")
 
+        # Affichage de l'accuracy
+        accuracy = accuracy_score(y_test, st.session_state['y_pred'])
+        st.write(f"Précision du modèle : {accuracy:.2f}")
+
         # Sauvegarde du modèle
         if st.checkbox("Sauvegarder le Modèle Entraîné"):
-            save_model(model, model_choice, params)
+            save_model(model, model_choice)
 
-# Fonction pour sauvegarder le modèle
-def save_model(model, model_name, params):
+# Fonction pour sauvegarder le modèle (nécessite d'importer joblib)
+import joblib
+
+def save_model(model, model_name):
     filename = f"{model_name}_model.pkl"
     joblib.dump(model, filename)
     st.success(f"Modèle {model_name} sauvegardé avec succès sous le nom {filename}.")

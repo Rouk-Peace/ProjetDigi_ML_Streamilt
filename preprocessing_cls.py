@@ -8,25 +8,11 @@ from sklearn.preprocessing import OneHotEncoder, LabelEncoder
 #def config_page():
 #    st.set_page_config(page_title="Préparation des Données", layout="wide")
 
-# Définition des couleurs
-def define_colors():
-    return {
-        'background': '#F5F5F5',
-        'block_bg': '#FFFFFF',
-        'text': '#1E3D59',
-        'button_bg': '#1E3D59',
-        'button_text': '#FFFFFF',
-        'button_hover': '#172A40',
-        'expander_bg': '#E8F0FE',
-        'title_text': '#1E3D59',
-        'subtitle_text': '#A78F41',
-        'border_color': '#E0E0E0',
-    }
 
 # Fonction principale pour la gestion du prétraitement
 def run_preprocessing_cls():
     #config_page()
-    colors = define_colors()
+    #colors = define_colors()
     df = load_dataset_option()
 
     if df is not None:
@@ -39,7 +25,7 @@ def run_preprocessing_cls():
 
         selected_columns = select_columns(df)
         if selected_columns:
-            clean_data(df, selected_columns, colors)
+            clean_data(df, selected_columns)
             if st.checkbox("Voulez-vous télécharger le fichier traité ?"):
                 download_processed_data(df)
         else:
@@ -80,10 +66,9 @@ def display_data_overview(df):
     st.write("**Aperçu des données :**")
     st.write(df.head())
     st.write("**Informations sur le dataset :**")
-    buffer = st.empty()
-    buffer.text(df.info())
-    st.write(f"Nombre de lignes : {df.shape[0]}")
-    st.write(f"Nombre de colonnes : {df.shape[1]}")
+    
+    #st.write(f"Nombre de lignes : {df.shape[0]}")
+    #st.write(f"Nombre de colonnes : {df.shape[1]}")
 
 # Fonction pour sélectionner les colonnes pour le traitement
 def select_columns(df):
@@ -94,10 +79,10 @@ def select_columns(df):
     )
 
 # Fonction pour nettoyer les données : gestion des valeurs manquantes et encodage
-def clean_data(df, selected_columns, colors):
+def clean_data(df, selected_columns):
     with st.expander("Nettoyage des Données", expanded=True):
-        st.markdown(f'<div style="background-color:{colors["block_bg"]}; padding: 10px; border-radius: 5px;">',
-                    unsafe_allow_html=True)
+        #st.markdown(f'<div style="background-color:{colors["block_bg"]}; padding: 10px; border-radius: 5px;">',
+                    #unsafe_allow_html=True)
 
         # Affichage des valeurs manquantes
         if st.checkbox("Afficher les valeurs manquantes"):

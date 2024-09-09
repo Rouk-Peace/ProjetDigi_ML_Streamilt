@@ -8,16 +8,6 @@ from scipy.stats import normaltest
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 import plotly.figure_factory as ff
 import statsmodels.api as sm
-"""
-# Titre de la sous-page
-st.title("Analyse de Données : Exploration et analyses visuelles des données pour la Régression")
-
-# Phrase explicative d'en-tête
-st.markdown("""
-#Bienvenue sur la page d'analyse des données. Cette section vous permet d'explorer, visualiser et comprendre
-#les caractéristiques du jeu de données avant la modélisation. L'objectif est de mettre en évidence les relations entre les variables,
-#d'identifier les tendances et les anomalies, et de préparer les données pour les étapes de régression.
-""")
 
 # Fonction pour analyse descriptive
 
