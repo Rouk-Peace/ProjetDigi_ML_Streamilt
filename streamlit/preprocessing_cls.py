@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OneHotEncoder, LabelEncoder
-
+import os
 # Configuration de la page principale
 #def config_page():
 #    st.set_page_config(page_title="Préparation des Données", layout="wide")
