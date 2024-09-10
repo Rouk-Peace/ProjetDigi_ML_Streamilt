@@ -35,9 +35,11 @@ def run_preprocessing_cls():
 def load_dataset_option():
     option = st.radio("Choisissez un dataset:", ("Fichier vin", "Charger votre propre fichier CSV"))
 
+    path = os.getcwd() + "/streamlit"
+
     if option == "Fichier vin":
         try:
-            df = pd.read_csv(r"../streamlit/data/vin.csv")
+            df = pd.read_csv(path + r"/data/vin.csv")
             # Assurez-vous que le fichier "vin.csv" est dans le bon répertoire
             st.success("Dataset vin chargé avec succès.")
             st.session_state['df'] = df # Initialiser st.session_state['df']
