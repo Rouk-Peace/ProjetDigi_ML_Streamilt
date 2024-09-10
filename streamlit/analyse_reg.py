@@ -97,7 +97,30 @@ def check_normalization(X):
             st.write("Cela peut affecter les modèles de régression. Vous pouvez normaliser ou standardiser les données.")
             method = st.radio("Choisissez une méthode :", ["StandardScaler", "MinMaxScaler"])
                        
+            if method in ["StandardScaler", "MinMaxScaler"]:
+                if st.button("Appliquer la standardisation"):
+                    scaler = StandardScaler() if method == "StandardScaler" else MinMaxScaler()
+                    X_scaled = pd.DataFrame(scaler.fit_transform(X), columns=X.columns)
+                    st.session_state['df'] = pd.concat([X_scaled, st.session_state['y']], axis=1)
+                    st.write("Standardisation appliquée avec succès.")
             
+            elif method == "Box-Cox":
+                if st.button("Appliquer la transformation Box-Cox"):
+                    # Applique la transformation Box-Cox sur chaque colonne non normale
+                    pt = PowerTransformer(method='box-cox', standardize=False)
+                    X_transformed = pd.DataFrame(pt.fit_transform(X[non_normal_cols]), columns=non_normal_cols)
+                    X.update(X_transformed)
+                    st.session_state['df'] = pd.concat([X, st.session_state['y']], axis=1)
+                    st.write("Transformation Box-Cox appliquée avec succès.")
+            
+            elif method == "Yeo-Johnson":
+                if st.button("Appliquer la transformation Yeo-Johnson"):
+                    # Applique la transformation Yeo-Johnson sur chaque colonne non normale
+                    pt = PowerTransformer(method='yeo-johnson', standardize=False)
+                    X_transformed = pd.DataFrame(pt.fit_transform(X[non_normal_cols]), columns=non_normal_cols)
+                    X.update(X_transformed)
+                    st.session_state['df'] = pd.concat([X, st.session_state['y']], axis=1)
+                    st.write("Transformation Yeo-Johnson appliquée avec succès.")
             
         else:
             st.write("Toutes les variables sont normalement distribuées.")
