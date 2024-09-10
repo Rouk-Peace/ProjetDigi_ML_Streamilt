@@ -233,7 +233,7 @@ elif page == "Conclusion":
     ### Algorithmes Utilisés
     - **Classification :** Nous avons exploré des modèles de classification comme la régression logistique, les forêts aléatoires (Random Forest) et les machines à vecteurs de support (SVM).
     - **Régression :** Nous avons utilisé des algorithmes de régression tels que la régression linéaire et la régression Ridge pour prédire des valeurs continues.
-    - **Détection d'objets :** Pour le projet de détection d'objets, nous avons intégré des modèles pré-entraînés de détection d'objets comme YOLO (You Only Look Once) via Roboflow.
+    - **Détection d'objets :** Pour le projet de détection d'objets, nous avons intégré des modèles pré-entraînés de détection d'objets via Roboflow.
  
     ### Perspectives
     - **Amélioration des Modèles :** Nous prévoyons d'expérimenter avec d'autres algorithmes de Machine Learning pour améliorer les performances des modèles.
