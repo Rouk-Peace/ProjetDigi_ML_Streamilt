@@ -37,6 +37,10 @@ def run_evaluation():
     st.subheader("Graphique des Valeurs Réelles vs Prédites")
     plot_real_vs_predicted(y_test, y_pred)
 
+    # Graphique de la distribution des résidus
+    st.subheader("Distribution des Résidus")
+    plot_residuals(y_test, y_pred)
+    
     # Affichage des coefficients si modèle linéaire
     if isinstance(model, (LinearRegression, Lasso)):
         plot_coefficients(model, X_test.columns)
@@ -66,6 +70,16 @@ def plot_real_vs_predicted(y_test, y_pred):
     ax.set_xlabel('Valeurs Réelles')
     ax.set_ylabel('Valeurs Prédites')
     ax.set_title('Valeurs Réelles vs Prédites')
+    st.pyplot(fig)
+
+#Fonction pour afficher le graphique des résidus
+def plot_residuals(y_test, y_pred):
+    residuals = y_test - y_pred
+    fig, ax = plt.subplots(figsize=(8, 6))
+    sns.histplot(residuals, kde=True, ax=ax, color='purple', bins=30)
+    ax.set_title("Distribution des Résidus")
+    ax.set_xlabel("Résidus")
+    ax.set_ylabel("Fréquence")
     st.pyplot(fig)
 
 # Fonction pour afficher les coefficients du modèle linéaire
