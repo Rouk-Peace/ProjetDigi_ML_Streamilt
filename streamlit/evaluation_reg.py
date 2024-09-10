@@ -35,10 +35,12 @@ def run_evaluation():
 
     # Graphique des valeurs réelles vs prédites
     st.subheader("Graphique des Valeurs Réelles vs Prédites")
+    st.write("Ce graphique montre comment les prédictions du modèle se comparent aux valeurs réelles. Un bon modèle aura des points proches de la ligne rouge")
     plot_real_vs_predicted(y_test, y_pred)
 
     # Graphique de la distribution des résidus
     st.subheader("Distribution des Résidus")
+    st.write("L’histogramme des résidus montre la distribution des erreurs. Idéalement, les résidus doivent suivre une distribution normale centrée autour de zéro. Cela indique que les erreurs sont aléatoires, sans biais systématique. Le modèle semble bien ajusté") 
     plot_residuals(y_test, y_pred)
     
     # Affichage des coefficients si modèle linéaire
