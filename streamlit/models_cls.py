@@ -11,7 +11,7 @@ import pandas as pd
 def encode_data(X):
     X_encoded = X.copy()
     for col in X_encoded.select_dtypes(include=['object']).columns:
-        if st.checkbox(f"Utiliser One-Hot Encoding pour {col} ?", value=True):
+        if st.checkbox(f"Utiliser LabelEncoder pour {col} ?", value=True):
             X_encoded = pd.get_dummies(X_encoded, columns=[col], drop_first=True)
         else:
             le = LabelEncoder()
