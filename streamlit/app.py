@@ -9,8 +9,8 @@ import os
 #st.set_page_config(page_title="PLAYGROUND ML", layout="wide", page_icon="🤖")
 
 #Chemins vers les images
-path = os.getcwd()
-logo_path = path + r'/img/Logo_Diginamic.jpg'
+path = os.getcwd() + "\streamlit"
+logo_path = path + r'\img\Logo_Diginamic.jpg'
 background_image_path = path + r"\img\computer-technology-business-website-header.jpg"
 team_image_path = path + r'\img\team work.jpg'
 
