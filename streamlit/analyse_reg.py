@@ -98,7 +98,7 @@ def check_normalization(X):
             method = st.radio("Choisissez une méthode :", ["StandardScaler", "MinMaxScaler", "Box-Cox", "Yeo-Johnson"])
                        
             if method in ["StandardScaler", "MinMaxScaler"]:
-                if st.button("Appliquer la standardisation"):
+                if st.button("Appliquer !"):
                     scaler = StandardScaler() if method == "StandardScaler" else MinMaxScaler()
                     X_scaled = pd.DataFrame(scaler.fit_transform(X), columns=X.columns)
                     st.session_state['df'] = pd.concat([X_scaled, st.session_state['y']], axis=1)
