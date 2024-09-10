@@ -173,4 +173,4 @@ def compare_models(X, y):
 
     # Affichage du meilleur modèle
     best_model_name = results_df.loc[results_df['RMSE'].idxmin()]['modèle']
-    st.write(f"Meilleur Modèle : {best_model_name} avec RMSE = {results_df['RMSE'].min():.4f}")
+    st.write(f"Meilleur Modèle : {best_model_name} avec MAE = {results_df['MAE'].min():.4f}")
