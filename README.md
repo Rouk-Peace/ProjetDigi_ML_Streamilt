@@ -1,5 +1,5 @@
 # 🧠 Machine Learning Playground with Streamlit
-
+Lien streamlit APP : https://projetdigimlstreamilt-c3ybvsxevneutw4fxukoou.streamlit.app/
 Bienvenue dans le **Machine Learning Playground**, une application interactive développée avec Streamlit. Ce projet propose un espace pour expérimenter avec des modèles de classification, de régression, et de détection d'ongles à partir d'images, le tout en utilisant une interface simple et intuitive. C'est un projet collaboratif avec une équipe de passionnés de machine learning et d'intelligence artificielle.
 
 ## 📋 Table des matières
