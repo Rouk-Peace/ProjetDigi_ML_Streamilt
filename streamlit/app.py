@@ -220,7 +220,7 @@ elif page == "Nail's detection (optionnel)":
 elif page == "Conclusion":
     st.title("Conclusion")
     st.write("""
-    ### Méthodologie
+    
     Notre projet a été géré en utilisant la méthodologie Agile, qui nous a permis de travailler de manière itérative et incrémentale. Nous avons organisé des sprints pour définir des objectifs clairs et avons régulièrement évalué nos progrès pour nous assurer que nous restions sur la bonne voie.
  
     ### Outils
