@@ -3,7 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import plotly.express as px
-from scipy.stats import normaltest
+from scipy.stats import normaltest, boxcox
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 # Affiche le titre et l'en-tête explicatif de la page
@@ -96,11 +96,9 @@ def check_normalization(X):
             st.write(non_normal_cols)
             st.write("Cela peut affecter les modèles de régression. Vous pouvez normaliser ou standardiser les données.")
             method = st.radio("Choisissez une méthode :", ["StandardScaler", "MinMaxScaler"])
-            if st.button("Appliquer la standardisation"):
-                scaler = StandardScaler() if method == "StandardScaler" else MinMaxScaler()
-                X_scaled = pd.DataFrame(scaler.fit_transform(X), columns=X.columns)
-                st.session_state['df'] = pd.concat([X_scaled, st.session_state['y']], axis=1)
-                st.write("Standardisation appliquée avec succès.")
+                       
+            
+            
         else:
             st.write("Toutes les variables sont normalement distribuées.")
 
