@@ -11,20 +11,20 @@ import os
 #Chemins vers les images
 path = os.getcwd() + "/streamlit"
 logo_path = path + r'/img/Logo_Diginamic.jpg'
-background_image_path = path + r"\img\computer-technology-business-website-header.jpg"
-team_image_path = path + r'\img\team work.jpg'
+background_image_path = path + r"/img/computer-technology-business-website-header.jpg"
+team_image_path = path + r'/img/team work.jpg'
 
 # Chemins vers les bannières
 banners = {
-    "Nail's detection (optionnel)": path + r"\img\roboflow.png",
+    "Nail's detection (optionnel)": path + r"/img/roboflow.png",
 }
 
 # Chargement des datasets prédéfinis
 def load_wine_data():
-    return pd.read_csv(path + r"\data\vin.csv")
+    return pd.read_csv(path + r"/data/vin.csv")
 
 def load_diabetes_data():
-    return pd.read_csv(path + r"\data\diabete.csv")
+    return pd.read_csv(path + r"/data/diabete.csv")
 
 # Sidebar: Logo et options
 st.sidebar.image(logo_path, width=195)
