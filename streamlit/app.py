@@ -10,7 +10,7 @@ import os
 
 #Chemins vers les images
 path = os.getcwd()
-logo_path = path + r'\img\Logo_Diginamic.jpg'
+logo_path = path + r'/img/Logo_Diginamic.jpg'
 background_image_path = path + r"\img\computer-technology-business-website-header.jpg"
 team_image_path = path + r'\img\team work.jpg'
 
