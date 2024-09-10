@@ -7,7 +7,7 @@ from evaluation_reg import run_evaluation
 def main_reg():
     # Configuration de la page
     #st.set_page_config(page_title="Projet ML: Modèles de Regression", layout="wide")
-
+    st.title("Régression : De la Préparation à l'Évaluation des Modèles")
     # Crée un dictionnaire de pages pour lier les noms aux fonctions
     pages = {
         "Prétraitement": run_preprocessing,
