@@ -3,26 +3,28 @@ import pandas as pd
 from PIL import Image
 from reg import main_reg  # Import de la fonction main depuis reg.py
 from cls import main_cls  # Import de la fonction main depuis cls.py
+import os
 
 # Configuration de la page principale
 #st.set_page_config(page_title="PLAYGROUND ML", layout="wide", page_icon="🤖")
 
 #Chemins vers les images
-logo_path = '../img/Logo_Diginamic.jpg'
-background_image_path = "../img/computer-technology-business-website-header.jpg"
-team_image_path = '../img/team work.jpg'
+path = os.getcwd()
+logo_path = path + r'\img\Logo_Diginamic.jpg'
+background_image_path = path + r"\img\computer-technology-business-website-header.jpg"
+team_image_path = path + r'\img\team work.jpg'
 
 # Chemins vers les bannières
 banners = {
-    "Nail's detection (optionnel)": "../img/roboflow.png",
+    "Nail's detection (optionnel)": path + r"\img\roboflow.png",
 }
 
 # Chargement des datasets prédéfinis
 def load_wine_data():
-    return pd.read_csv("../streamlit/data/vin.csv")
+    return pd.read_csv(path + r"\data\vin.csv")
 
 def load_diabetes_data():
-    return pd.read_csv("../streamlit/data/diabete.csv")
+    return pd.read_csv(path + r"\data\diabete.csv")
 
 # Sidebar: Logo et options
 st.sidebar.image(logo_path, width=195)
