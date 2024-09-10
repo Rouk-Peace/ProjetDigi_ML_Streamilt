@@ -51,7 +51,7 @@ else:
         st.sidebar.info("Veuillez télécharger un fichier CSV pour commencer et tester les fonctionnalités.")
 
 # Définition du sommaire dans la sidebar
-pages = ["Accueil", "Équipe", "Classification", "Régression", "Nail's detection (optionnel)", "Conclusion"]
+pages = ["Accueil", "Équipe", "Régression", "Classification",  "Nail's detection (optionnel)", "Conclusion"]
 page = st.sidebar.radio("Naviguez vers :", pages)
 
 # Affichage de la bannière pour chaque page
@@ -105,6 +105,22 @@ elif page == "Équipe":
     - **Saba Aziri** a supervisé la mise en œuvre de l'interface utilisateur et a intégré des éléments de design interactifs pour rendre l'application visuellement attrayante et facile à utiliser. Elle a également ajouté des fonctionnalités amusantes pour améliorer l'interaction.
     """)
 
+# Régression
+elif page == "Régression":
+    #st.title("Régression")
+    #st.write("Explorez différentes techniques de régression.")
+
+    if data is not None:
+        #st.write("Aperçu du dataset sélectionné :")
+        #st.dataframe(data.head())
+        
+        # Définir X et y pour la régression
+        X = data.drop(columns=['target'])  # Assurez-vous que 'target' est bien la colonne de la variable cible
+        y = data['target']
+        
+        # Appel de la fonction main() depuis le fichier reg.py
+        main_reg()
+
 
 # classification
 elif page == "Classification":
@@ -122,23 +138,6 @@ elif page == "Classification":
         # Appel de la fonction main() depuis le fichier reg.py
         main_cls()
 
-
-
-# Régression
-elif page == "Régression":
-    #st.title("Régression")
-    #st.write("Explorez différentes techniques de régression.")
-
-    if data is not None:
-        #st.write("Aperçu du dataset sélectionné :")
-        #st.dataframe(data.head())
-        
-        # Définir X et y pour la régression
-        X = data.drop(columns=['target'])  # Assurez-vous que 'target' est bien la colonne de la variable cible
-        y = data['target']
-        
-        # Appel de la fonction main() depuis le fichier reg.py
-        main_reg()
 
 # Nail's detection (optionnel)
 
