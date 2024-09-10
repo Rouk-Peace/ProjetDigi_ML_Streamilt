@@ -141,6 +141,8 @@ elif page == "Régression":
         main_reg()
 
 # Nail's detection (optionnel)
+
+
 elif page == "Nail's detection (optionnel)":
     st.title("Nail's detection")
     st.write("""
@@ -148,6 +150,72 @@ elif page == "Nail's detection (optionnel)":
     Dans le cadre de ce projet, nous avons intégré **Roboflow**, une plateforme puissante pour la création et le déploiement de modèles de vision par ordinateur. Roboflow simplifie le processus de formation de modèles de détection d'objets en fournissant des outils conviviaux pour annoter des images, entraîner des modèles et déployer des solutions de détection en temps réel.
     Pour notre tâche spécifique, nous avons utilisé Roboflow pour développer un modèle capable de détecter des ongles dans des images. Vous pouvez télécharger une image ci-dessous pour tester la détection d'objets et voir comment le modèle fonctionne.
     """)
+ 
+    def nail_page():
+        st.header("Bienvenue")
+        st.caption("Bienvenue dans la détection d'ongles")
+ 
+        # Entrer la clé API et le modèle ID
+        api_key = st.text_input("Entrez votre clé API", type="password")
+        model_id = st.text_input("Entrez l'ID de votre modèle")
+ 
+        # URL de l'API
+        api_url = "https://detect.roboflow.com"
+ 
+        if api_key and model_id:
+            # Charger une image locale ou à partir d'une URL
+            image_source = st.radio("Source de l'image", ["Image locale", "URL de l'image"])
+ 
+            result = None  # Initialise result pour éviter l'erreur 'result' referenced before assignment
+ 
+            if image_source == "Image locale":
+                uploaded_file = st.file_uploader("Choisissez une image", type=["jpg", "png", "jpeg"])
+                if uploaded_file is not None:
+                    try:
+                        # Lire le fichier comme image
+                        files = {"file": uploaded_file}
+                        headers = {"Authorization": f"Bearer {api_key}"}
+                        # Envoyer la demande à l'API
+                        response = requests.post(f"{api_url}/{model_id}", headers=headers, files=files)
+                        result = response.json()
+ 
+                        # Vérification de la réponse complète
+                        st.write("Contenu complet de la réponse API :")
+                        st.json(result)  # Affiche la réponse JSON complète
+ 
+                    except Exception as e:
+                        st.error(f"Erreur lors du traitement de l'image locale : {e}")
+            else:
+                image_url = st.text_input("Entrez l'URL de l'image")
+                if image_url:
+                    try:
+                        # Envoyer la demande à l'API avec l'URL de l'image
+                        response = requests.post(f"{api_url}/{model_id}", headers={"Authorization": f"Bearer {api_key}"}, json={"image_url": image_url})
+                        result = response.json()
+ 
+                        # Vérification de la réponse complète
+                        st.write("Contenu complet de la réponse API :")
+                        st.json(result)  # Affiche la réponse JSON complète
+ 
+                    except Exception as e:
+                        st.error(f"Erreur lors de l'inférence avec l'URL : {e}")
+ 
+            # Afficher les résultats de l'inférence
+            if result:
+                if 'Predictions' in result:
+                    st.write("Prédictions :")
+                    for pred in result['Predictions']:
+                        st.write(f"Confiance: {pred['confidence']}, Classe: {pred['class']}")
+                else:
+                    st.error("Aucune prédiction trouvée. Vérifiez si le modèle a bien détecté quelque chose.")
+            else:
+                st.warning("Aucune réponse reçue de l'API. Vérifiez votre clé API, modèle ID ou image.")
+        else:
+            st.warning("Veuillez entrer votre clé API et le modèle ID pour continuer.")
+ 
+    # Exécuter la fonction
+    if __name__ == "__main__":
+        nail_page()
     
 # Conclusion
 elif page == "Conclusion":
