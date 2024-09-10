@@ -197,7 +197,7 @@ def modify_and_encode_target(df):
         st.write(df['target_encoded'].unique())
         
         st.write("**Aperçu de la colonne 'target' après modification et encodage :**")
-        st.write(df[['target', 'target_encoded']].head())
+        #st.write(df[['target', 'target_encoded']].head())
     else:
         st.warning("La colonne 'target' n'est pas présente dans le DataFrame.")
 
