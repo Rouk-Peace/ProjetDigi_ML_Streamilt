@@ -5,7 +5,7 @@ import numpy as np
 from sklearn.impute import SimpleImputer
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+import os
 
 def run_preprocessing():
     st.header("Prétraitement des Données")
