@@ -1,8 +1,12 @@
 import streamlit as st
 import pandas as pd
+import streamlit as st
+import requests
+from inference_sdk import InferenceHTTPClient
 from PIL import Image
 from reg import main_reg  # Import de la fonction main depuis reg.py
 from cls import main_cls  # Import de la fonction main depuis cls.py
+
 
 # Configuration de la page principale
 #st.set_page_config(page_title="PLAYGROUND ML", layout="wide", page_icon="🤖")
@@ -146,7 +150,57 @@ elif page == "Nail's detection (optionnel)":
     Dans le cadre de ce projet, nous avons intégré **Roboflow**, une plateforme puissante pour la création et le déploiement de modèles de vision par ordinateur. Roboflow simplifie le processus de formation de modèles de détection d'objets en fournissant des outils conviviaux pour annoter des images, entraîner des modèles et déployer des solutions de détection en temps réel.
     Pour notre tâche spécifique, nous avons utilisé Roboflow pour développer un modèle capable de détecter des ongles dans des images. Vous pouvez télécharger une image ci-dessous pour tester la détection d'objets et voir comment le modèle fonctionne.
     """)
-    
+
+    def nail_page():
+        st.header("Bienvenue")
+        st.caption("Bienvenue dans la détection d'ongle")
+ 
+        # Entrer la clé API et le modèle ID
+        api_key = st.text_input("Entrez votre clé API", type="password")
+        model_id = st.text_input("Entrez l'ID de votre modèle")
+ 
+        # URL de l'API
+        api_url = "https://detect.roboflow.com"
+ 
+        if api_key and model_id:
+            # Charger une image locale ou à partir d'une URL
+            image_source = st.radio("Source de l'image", ["Image locale", "URL de l'image"])
+ 
+            if image_source == "Image locale":
+                uploaded_file = st.file_uploader("Choisissez une image", type=["jpg", "png", "jpeg"])
+                if uploaded_file is not None:
+                    try:
+                        # Lire le fichier comme image
+                        files = {"file": uploaded_file}
+                        headers = {"Authorization": f"Bearer {api_key}"}
+                        # Envoyer la demande à l'API
+                        response = requests.post(f"{api_url}/{model_id}", headers=headers, files=files)
+                        result = response.json()
+                    except Exception as e:
+                        st.error(f"Erreur lors du traitement de l'image locale : {e}")
+            else:
+                image_url = st.text_input("Entrez l'URL de l'image")
+                if image_url:
+                    try:
+                        # Envoyer la demande à l'API avec l'URL de l'image
+                        response = requests.post(f"{api_url}/{model_id}", headers={"Authorization": f"Bearer {api_key}"}, json={"image_url": image_url})
+                        result = response.json()
+                    except Exception as e:
+                        st.error(f"Erreur lors de l'inférence avec l'URL : {e}")
+ 
+            # Afficher les résultats de l'inférence
+            if 'result' in locals():
+                st.write("Prédictions :")
+                for pred in result['Predictions']:
+                    st.write(f"Confiance: {pred['confidence']}, Classe: {pred['class']}")
+        else:
+            st.warning("Veuillez entrer votre clé API et le modèle ID pour continuer.")
+ 
+    # Exécuter la fonction
+    if __name__ == "__main__":
+        nail_page()
+
+
 # Conclusion
 elif page == "Conclusion":
     st.title("Conclusion")
