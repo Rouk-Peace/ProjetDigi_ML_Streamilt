@@ -1,0 +1,77 @@
+Index: regression/preprocessing_reg.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import streamlit as st\r\nimport pandas as pd\r\nimport numpy as np\r\nfrom sklearn.impute import SimpleImputer\r\n\r\n\r\n# Configuration de la page principale\r\n\"\"\"\r\ndef config_page():\r\n    st.set_page_config(page_title=\"Préparation des Données\", layout=\"wide\")\r\n\"\"\"\r\n\r\n# Définition des couleurs\r\ndef define_colors():\r\n    return {\r\n        'background': '#F5F5F5',\r\n        'block_bg': '#FFFFFF',\r\n        'text': '#1E3D59',\r\n        'button_bg': '#1E3D59',\r\n        'button_text': '#FFFFFF',\r\n        'button_hover': '#172A40',\r\n        'expander_bg': '#E8F0FE',\r\n        'title_text': '#1E3D59',\r\n        'subtitle_text': '#A78F41',\r\n        'border_color': '#E0E0E0',\r\n    }\r\n\r\n\r\n# Fonction principale pour la gestion du prétraitement\r\ndef run_preprocessing():\r\n    #config_page()\r\n    colors = define_colors()\r\n    uploaded_file = st.sidebar.file_uploader(\"Téléchargez votre fichier CSV\", type=[\"csv\"])\r\n\r\n    if uploaded_file is not None:\r\n        df = load_data(uploaded_file)\r\n        if df is not None:\r\n            display_data_overview(df)\r\n            selected_columns = select_columns(df)\r\n\r\n            if selected_columns:\r\n                clean_data(df, selected_columns, colors)\r\n                download_processed_data(df)\r\n                st.session_state['df'] = df  # Stocke les données dans la session\r\n            else:\r\n                st.write(\"Veuillez sélectionner des colonnes pour le traitement.\")\r\n\r\n\r\n# Fonction pour charger les données\r\ndef load_data(uploaded_file):\r\n    try:\r\n        df = pd.read_csv(uploaded_file)\r\n        return df\r\n    except Exception as e:\r\n        st.write(f\"Erreur lors du chargement du fichier : {e}\")\r\n        return None\r\n\r\n\r\n# Fonction pour afficher l'aperçu des données et des informations\r\ndef display_data_overview(df):\r\n    st.title(\"Préparation des Données\")\r\n    st.write(\"**Aperçu des données :**\")\r\n    st.write(df.head())\r\n\r\n    st.write(\"**Informations sur le dataset :**\")\r\n    buffer = st.empty()  # Pour afficher l'info du dataset proprement\r\n    buffer.text(df.info())  # Peut nécessiter un hack pour mieux afficher sur Streamlit\r\n\r\n    st.write(f\"Nombre de lignes : {df.shape[0]}\")\r\n    st.write(f\"Nombre de colonnes : {df.shape[1]}\")\r\n\r\n\r\n# Fonction pour sélectionner les colonnes pour le traitement\r\ndef select_columns(df):\r\n    return st.sidebar.multiselect(\r\n        \"Sélectionnez les colonnes pour traitement\",\r\n        df.columns.tolist(),\r\n        default=df.columns.tolist()\r\n    )\r\n\r\n\r\n# Fonction pour nettoyer les données : gestion des valeurs manquantes et encodage\r\ndef clean_data(df, selected_columns, colors):\r\n    with st.expander(\"Nettoyage des Données\", expanded=True):\r\n        st.markdown(f'<div style=\"background-color:{colors[\"block_bg\"]}; padding: 10px; border-radius: 5px;\">',\r\n                    unsafe_allow_html=True)\r\n\r\n        # Affichage des valeurs manquantes\r\n        if st.checkbox(\"Afficher les valeurs manquantes\"):\r\n            st.write(df[selected_columns].isnull().sum())\r\n\r\n        # Imputation des valeurs manquantes\r\n        impute_missing_values(df, selected_columns)\r\n\r\n        # Gestion des lignes/colonnes manquantes\r\n        manage_missing_data(df, selected_columns)\r\n\r\n        # Vérification des types de données\r\n        if st.checkbox(\"Afficher les types de données actuels\"):\r\n            st.write(df.dtypes)\r\n\r\n        st.markdown('</div>', unsafe_allow_html=True)\r\n\r\n\r\n# Fonction pour imputer les valeurs manquantes\r\ndef impute_missing_values(df, selected_columns):\r\n    st.write(\"**Imputation des valeurs manquantes :**\")\r\n    imputation_strategy = st.selectbox(\r\n        \"Choisissez la méthode d'imputation\",\r\n        [\"Aucune\", \"Moyenne\", \"Médiane\", \"Valeur exacte\"]\r\n    )\r\n\r\n    if imputation_strategy == \"Moyenne\" and st.button(\"Imputer avec la moyenne\"):\r\n        imputer = SimpleImputer(strategy='mean')\r\n        df[selected_columns] = imputer.fit_transform(df[selected_columns])\r\n        st.write(\"Valeurs manquantes imputées avec la moyenne.\")\r\n\r\n    elif imputation_strategy == \"Médiane\" and st.button(\"Imputer avec la médiane\"):\r\n        imputer = SimpleImputer(strategy='median')\r\n        df[selected_columns] = imputer.fit_transform(df[selected_columns])\r\n        st.write(\"Valeurs manquantes imputées avec la médiane.\")\r\n\r\n    elif imputation_strategy == \"Valeur exacte\":\r\n        value = st.number_input(\"Entrez la valeur pour l'imputation\", value=0)\r\n        if st.button(\"Imputer avec la valeur exacte\"):\r\n            imputer = SimpleImputer(strategy='constant', fill_value=value)\r\n            df[selected_columns] = imputer.fit_transform(df[selected_columns])\r\n            st.write(f\"Valeurs manquantes imputées avec la valeur {value}.\")\r\n\r\n\r\n# Fonction pour gérer les valeurs manquantes\r\ndef manage_missing_data(df, selected_columns):\r\n    st.write(\"**Gestion des valeurs manquantes :**\")\r\n    if st.button(\"Supprimer les lignes avec des valeurs manquantes\"):\r\n        df.dropna(subset=selected_columns, inplace=True)\r\n        st.write(\"Lignes contenant des valeurs manquantes supprimées.\")\r\n\r\n    if st.button(\"Supprimer les colonnes avec des valeurs manquantes\"):\r\n        df.dropna(axis=1, subset=selected_columns, inplace=True)\r\n        st.write(\"Colonnes contenant des valeurs manquantes supprimées.\")\r\n\r\n\r\n# Fonction pour télécharger les données traitées\r\ndef download_processed_data(df):\r\n    st.write(\"**Télécharger le fichier traité :**\")\r\n    csv = df.to_csv(index=False).encode('utf-8')\r\n    st.download_button(\r\n        label=\"Télécharger le fichier CSV\",\r\n        data=csv,\r\n        file_name='data_prepared.csv',\r\n        mime='text/csv'\r\n    )\r\n\r\n\r\n# Appel de la fonction principale pour le module de préprocessing\r\n\"\"\"if __name__ == \"__main__\":\r\n    preprocessing_module()\"\"\"\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/regression/preprocessing_reg.py b/regression/preprocessing_reg.py
+--- a/regression/preprocessing_reg.py	(revision 965b109961994e635eda748de71407f7bc5aed43)
++++ b/regression/preprocessing_reg.py	(date 1725613457547)
+@@ -10,26 +10,11 @@
+     st.set_page_config(page_title="Préparation des Données", layout="wide")
+ """
+ 
+-# Définition des couleurs
+-def define_colors():
+-    return {
+-        'background': '#F5F5F5',
+-        'block_bg': '#FFFFFF',
+-        'text': '#1E3D59',
+-        'button_bg': '#1E3D59',
+-        'button_text': '#FFFFFF',
+-        'button_hover': '#172A40',
+-        'expander_bg': '#E8F0FE',
+-        'title_text': '#1E3D59',
+-        'subtitle_text': '#A78F41',
+-        'border_color': '#E0E0E0',
+-    }
+-
+ 
+ # Fonction principale pour la gestion du prétraitement
+ def run_preprocessing():
+     #config_page()
+-    colors = define_colors()
++
+     uploaded_file = st.sidebar.file_uploader("Téléchargez votre fichier CSV", type=["csv"])
+ 
+     if uploaded_file is not None:
+@@ -39,7 +24,7 @@
+             selected_columns = select_columns(df)
+ 
+             if selected_columns:
+-                clean_data(df, selected_columns, colors)
++                clean_data(df, selected_columns)
+                 download_processed_data(df)
+                 st.session_state['df'] = df  # Stocke les données dans la session
+             else:
+@@ -63,11 +48,11 @@
+     st.write(df.head())
+ 
+     st.write("**Informations sur le dataset :**")
+-    buffer = st.empty()  # Pour afficher l'info du dataset proprement
+-    buffer.text(df.info())  # Peut nécessiter un hack pour mieux afficher sur Streamlit
++    #buffer = st.empty()  # Pour afficher l'info du dataset proprement
++    #buffer.text(df.info())  # Peut nécessiter un hack pour mieux afficher sur Streamlit
+ 
+-    st.write(f"Nombre de lignes : {df.shape[0]}")
+-    st.write(f"Nombre de colonnes : {df.shape[1]}")
++    st.write(f"**Nombre de lignes** : {df.shape[0]}")
++    st.write(f"**Nombre de colonnes** : {df.shape[1]}")
+ 
+ 
+ # Fonction pour sélectionner les colonnes pour le traitement
+@@ -80,10 +65,10 @@
+ 
+ 
+ # Fonction pour nettoyer les données : gestion des valeurs manquantes et encodage
+-def clean_data(df, selected_columns, colors):
++def clean_data(df, selected_columns):
+     with st.expander("Nettoyage des Données", expanded=True):
+-        st.markdown(f'<div style="background-color:{colors["block_bg"]}; padding: 10px; border-radius: 5px;">',
+-                    unsafe_allow_html=True)
++        #st.markdown(f'<div style="background-color:{colors["block_bg"]}; padding: 10px; border-radius: 5px;">',
++                    #unsafe_allow_html=True)
+ 
+         # Affichage des valeurs manquantes
+         if st.checkbox("Afficher les valeurs manquantes"):

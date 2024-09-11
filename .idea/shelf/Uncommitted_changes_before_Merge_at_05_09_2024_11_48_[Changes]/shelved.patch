@@ -1,0 +1,15 @@
+diff --git a/feature_engineering.py b/regression/feature_engineering.py
+rename from feature_engineering.py
+rename to regression/feature_engineering.py
+diff --git a/preprocessing_reg.py b/regression/preprocessing_reg.py
+rename from preprocessing_reg.py
+rename to regression/preprocessing_reg.py
+diff --git a/results.py b/regression/results.py
+rename from results.py
+rename to regression/results.py
+diff --git a/evaluation.py b/regression/evaluation.py
+rename from evaluation.py
+rename to regression/evaluation.py
+diff --git a/models.py b/regression/models.py
+rename from models.py
+rename to regression/models.py
